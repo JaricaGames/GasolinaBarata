@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">PrecioGasolina</string>
+    <string name="seleccioneCarburante">Seleccione Carburante (SI DESEA)</string>
+    <string name="seleccioneProvincia">Seleccione una Provincia</string>
+    <string name="seleccioneMunicipio">Seleccione un municipio</string>
+    <string name="searchButtton">Buscar</string>
+
+    Oresultado
+    <string name="result0">Uppps, no hemos encontrado ningun resultado</string>
+    <string name="result0_2">pruebe con otros filtros</string>
+    <string name="Buttonresult0">Modificar Filtros</string>
+
+    Tipos de gasolina
+    <string name="Diesel">Diesel:  </string>
+    <string name="GasolinaSinPlomo">Gasolina 95 E5:  </string>
+    <string name="precioGasoleoPremium">Diesel Premium:  </string>
+    <string name="precioGasolina98E5">Gasolina 98 E5</string>
+
+
+</resources>
