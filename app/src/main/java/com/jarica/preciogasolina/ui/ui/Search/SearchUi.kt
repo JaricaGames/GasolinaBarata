@@ -3,6 +3,7 @@ package com.jarica.preciogasolina.ui.ui.Search
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,15 +15,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.response.Gasolina
 import com.jarica.preciogasolina.data.network.response.Province
@@ -91,18 +91,13 @@ fun SearchUi(
                 }
             }
 
-            AndroidView(modifier = Modifier.fillMaxWidth(), factory = { context ->
-                AdView(context).apply {
-                    setAdSize(AdSize.FULL_BANNER)
-                    adUnitId = "ca-app-pub-3940256099942544~3347511713"
-                    loadAd(AdRequest.Builder().build())
-                }
-
-            } )
-
         }
     } else {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        Box( contentAlignment = Alignment.Center, modifier = Modifier
+            .fillMaxSize()
+            .background(
+                colorResource(id = R.color.Naranja)
+            )) {
             CircularProgressIndicator()
         }
     }

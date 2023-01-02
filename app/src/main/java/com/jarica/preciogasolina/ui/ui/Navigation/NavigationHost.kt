@@ -24,7 +24,7 @@ fun NavigationHost(
             SearchUi(searchViewModel, navController, listViewModel)
         }
         composable(MapScreen.route){
-            MapUi(mapViewModel)
+            MapUi(mapViewModel, listViewModel)
         }
         composable(ListScreen.route){
             ListUi(listViewModel, navController)

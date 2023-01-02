@@ -26,7 +26,6 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
     val gasolineList: LiveData<List<Gasolina>> = _gasolineList
 
     private val _isGasolineSelected = MutableLiveData<Boolean>()
-    val isGasolineSelected: LiveData<Boolean> = _isGasolineSelected
 
 
 
