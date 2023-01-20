@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.jarica.preciogasolina.ui.ui.Components.BottomNavigationBar
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.MainScreen.MainScreenViewModel
 import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.*
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
@@ -15,13 +14,15 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen(
+fun MainScreenUi(
     searchViewModel: SearchViewModel,
     mapViewModel: MapViewModel,
     listViewModel: ListViewModel
 ) {
 
-    val navController = rememberNavController()
+
+
+    val navController2 = rememberNavController()
 
     val navigationItems = listOf(
         SearchScreen,
@@ -29,12 +30,19 @@ fun MainScreen(
         ListScreen
     )
 
+
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController = navController, items = navigationItems)
+                BottomNavigationBar(navController = navController2, items = navigationItems)
         }
     ) {
-        NavigationHost(navController = navController, searchViewModel,mapViewModel, listViewModel)
+        HomeNavigationHost(
+            navController = navController2,
+            searchViewModel,
+            mapViewModel,
+            listViewModel
+        )
     }
+
 
 }

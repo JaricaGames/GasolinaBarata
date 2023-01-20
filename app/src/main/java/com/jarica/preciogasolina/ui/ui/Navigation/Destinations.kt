@@ -1,33 +1,41 @@
 package com.jarica.preciogasolina.ui.ui.Navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.jarica.preciogasolina.R
 
 sealed class Destinations(
     val route: String,
     val title: String,
-    val icon: ImageVector
+    val icon: Int
 )
 
 object MapScreen : Destinations(
     "MapScreen",
     "Mapa",
-    Icons.Filled.Home
+    R.drawable.ic_map
 )
 
 object ListScreen : Destinations(
     "ListScreen",
     "Lista",
-    Icons.Filled.List
+    R.drawable.ic_list
 )
 
 object SearchScreen : Destinations(
     "SearchScreen",
     "Buscar",
-    Icons.Filled.Search
+    R.drawable.ic_search
+)
+
+object SplashScreen : Destinations(
+    "SplashScreen",
+    "SplashScreen",
+    R.drawable.ic_search
+)
+
+object MainScreenUi : Destinations(
+    "MainScreen",
+    "MainScreen",
+    R.drawable.ic_search
 )
 
 

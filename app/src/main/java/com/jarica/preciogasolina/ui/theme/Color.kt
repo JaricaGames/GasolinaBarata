@@ -2,10 +2,10 @@ package com.jarica.preciogasolina.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFFA6900)
-val Purple500 = Color(0xFFFA6900)
-val Purple700 = Color(0xFFFA6900)
-val Teal200 = Color(0xFFFA6900)
+val Purple200 = Color(0xFFFFFFFF)
+val Purple500 = Color(0xFFFFFFFF)
+val Purple700 = Color(0xFFFFFFFF)
+val Teal200 = Color(0xFFFFFFFF)
 
 
 val Naranja = Color(0xFFFA6900)

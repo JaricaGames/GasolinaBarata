@@ -1,12 +1,14 @@
 package com.jarica.preciogasolina.ui.ui.List.Screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
+import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 
 @Composable
@@ -45,6 +48,13 @@ fun GasStationTextByTown(
     ) {
         GasStationTitle(gasStation)
         GasStationAddress(gasStation)
+        Spacer(modifier = Modifier.height(2.dp))
+        Box(modifier = Modifier
+            .height(1.dp)
+            .fillMaxWidth()
+            .background(colorResource(id = R.color.Gris))) {
+            
+        }
         PriceGas(gasStation)
 
     }
@@ -57,13 +67,204 @@ fun PriceGas(gasStation: GasolineraPorMunicipio) {
         PrecioGasoil(gasStation)
         PrecioGasoilPremium(gasStation)
         PrecioGasolina95E5(gasStation)
+        PrecioGasolina95E10(gasStation)
         PrecioGasolina98E5(gasStation)
+        PrecioGasolina98E10(gasStation)
+        PrecioGasolina95E5Premium(gasStation)
+        PrecioGasoleoB(gasStation)
+        PrecioBioetanol(gasStation)
+        PrecioBiodiesel(gasStation)
+        PrecioGNC(gasStation)
+        PrecioGLP(gasStation)
+
     }
 }
 
 @Composable
-fun PrecioGasolina98E5(gasStation: GasolineraPorMunicipio) {
-    if (!gasStation.precioGasolina98E10.isNullOrEmpty()) {
+fun PrecioGLP(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGaseslicuadosdelpetroleo.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioGLP),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoPremium + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioGNC(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGasNaturalComprimido.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioGNC),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasNaturalComprimido + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioBiodiesel(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioBiodiesel.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioBiodiesel),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoPremium + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioBioetanol(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioBioetanol.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioBioetanol),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoPremium + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioGasoleoB(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGasoleoB.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioGasoleoB),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoB + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioGasolina95E10(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGasolina95E10.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioGasolina95E10),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoPremium + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioGasolina95E5Premium(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGasolina95E5Premium.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioGasolina95E5Premium),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoPremium + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioGasolina98E10(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGasolina98E5.isNullOrEmpty()) {
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -76,9 +277,38 @@ fun PrecioGasolina98E5(gasStation: GasolineraPorMunicipio) {
             Spacer(modifier = Modifier.size(3.dp))
             Text(
                 text = gasStation.precioGasoleoPremium + " €",
-                fontSize = 25.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.NaranjaClaro)
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun PrecioGasolina98E5(gasStation: GasolineraPorMunicipio) {
+    if (!gasStation.precioGasolina98E10.isNullOrEmpty()) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.precioGasolina98E10),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Text(
+                text = gasStation.precioGasoleoPremium + " €",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
             )
         }
     }
@@ -101,7 +331,10 @@ fun PrecioGasolina95E5(gasStation: GasolineraPorMunicipio) {
                 text = gasStation.precioGasolina95E5 + " €",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.NaranjaClaro)
+                fontFamily = poppins,
+                color = colorResource(
+                    id = R.color.NaranjaClaro
+                )
             )
         }
     }
@@ -124,6 +357,7 @@ fun PrecioGasoilPremium(gasStation: GasolineraPorMunicipio) {
                 text = gasStation.precioGasoleoPremium + " €",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
                 color = colorResource(
                     id = R.color.NaranjaClaro
                 )
@@ -146,6 +380,7 @@ fun PrecioGasoil(gasStation: GasolineraPorMunicipio) {
                 text = gasStation.precioGasoleoA + " €",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = poppins,
                 color = colorResource(
                     id = R.color.NaranjaClaro
                 )
