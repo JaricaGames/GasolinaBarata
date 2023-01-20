@@ -1,11 +1,13 @@
 package com.jarica.preciogasolina.ui.ui.Map
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.MapProperties
 import com.jarica.preciogasolina.data.network.response.GasolineraPorGasolinaYMunicipio
@@ -44,17 +46,15 @@ class MapViewModel @Inject constructor(): ViewModel() {
         _cameraPositionState.value = CameraPositionState(position = CameraPosition.fromLatLngZoom(LatLng(latitud, longitud),12f) )
     }
 
-    fun getCameraPosition(gasolineList: List<GasolineraPorMunicipio>): LatLng {
-        return LatLng(
-            replaceString(gasolineList[0].latitud),
-            replaceString(gasolineList[0].longitud)
-        )
 
-    }
 
-    var sWBound:LatLng = LatLng(100.0, 100.0)
-    var nEBound:LatLng = LatLng(-100.0, -100.0)
+    var sWBound = LatLng(100.0, 100.0)
+    var nEBound = LatLng(-100.0, -100.0)
+
+
     fun getBounds(latitud: Double, longitud: Double): LatLngBounds {
+
+
 
         if(latitud<sWBound.latitude) sWBound = LatLng(latitud, sWBound.longitude)
         if(longitud<sWBound.longitude) sWBound = LatLng(sWBound.latitude, longitud)
@@ -63,5 +63,35 @@ class MapViewModel @Inject constructor(): ViewModel() {
 
         return LatLngBounds(sWBound, nEBound)
    }
+
+
+    fun BitmapFromVector(context: Context, icGasstationdefault: Int): BitmapDescriptor? {
+        // below line is use to generate a drawable.
+        val vectorDrawable = getDrawable(context, icGasstationdefault)
+
+        // below line is use to set bounds to our vector drawable.
+        vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+
+        // below line is use to create a bitmap for our drawable which we have added.
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        // below line is use to add bitmap in our canvas.
+        val canvas = Canvas(bitmap)
+
+        // below line is use to draw our vector drawable in canvas.
+        vectorDrawable.draw(canvas)
+
+        // after generating our bitmap we are returning our bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    fun restartBounds() {
+        sWBound = LatLng(100.0, 100.0)
+        nEBound = LatLng(-100.0, -100.0)
+    }
 
 }

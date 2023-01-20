@@ -2,9 +2,21 @@ package com.jarica.preciogasolina.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.jarica.preciogasolina.R
+
+val poppins = FontFamily(
+    Font(R.font.poppinsmedium, FontWeight.Medium),
+    Font(R.font.poppinsblack, FontWeight.ExtraBold),
+    Font(R.font.poppinsthin, FontWeight.Thin),
+    Font(R.font.poppinsextralight, FontWeight.ExtraLight),
+    Font(R.font.poppinsbold, FontWeight.Bold),
+    Font(R.font.poppinslight, FontWeight.Light),
+    Font(R.font.poppinsregular, FontWeight.Normal)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -13,6 +25,7 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     )
+
     /* Other default text styles to override
     button = TextStyle(
         fontFamily = FontFamily.Default,

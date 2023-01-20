@@ -28,7 +28,6 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
     private val _isGasolineSelected = MutableLiveData<Boolean>()
 
 
-
     private val _provinceSelected = MutableLiveData<String>()
     val provinceSelected: LiveData<String> = _provinceSelected
 
@@ -40,7 +39,6 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
 
     private val _isProvinceSelected = MutableLiveData<Boolean>()
     val isProvinceSelected: LiveData<Boolean> = _isProvinceSelected
-
 
 
     private val _townSelected = MutableLiveData<String>()
@@ -89,14 +87,19 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
     }
 
     fun onTownClicked(townExpanded: Boolean) {
-         _isTownExpanded.value = !townExpanded
+        _isTownExpanded.value = !townExpanded
     }
 
     fun onTownSelected(municipio: String, isTownSelected: Boolean, idMunicipio: String) {
         _townSelected.value = municipio
-        if(!isTownSelected) _isTownSelected.value = !isTownSelected
+        if (!isTownSelected) _isTownSelected.value = !isTownSelected
         idMunicipioSeleccionado = idMunicipio
 
+    }
+
+    fun onDismissTown() {
+        _townSelected.value = ""
+        _isTownSelected.value = false
     }
 
     private fun getTownsByProvince(idProvincia: String) {

@@ -1,6 +1,7 @@
 package com.jarica.preciogasolina.ui.ui.List.Screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.response.GasolineraPorGasolinaYMunicipio
+import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.nameGasolinaSeleccionada
 
 @Composable
@@ -21,7 +23,7 @@ fun cardStationByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
 
 
             Card(
-                elevation = 8.dp, modifier = Modifier
+                elevation = 1.dp, modifier = Modifier
                     .padding(horizontal = 10.dp, vertical = 4.dp)
                     .fillMaxWidth(), backgroundColor = colorResource(id = R.color.Beige)
             ) {
@@ -44,6 +46,11 @@ fun GasStationTextByGasolineAndTown(
     ) {
         GasStationTitleByGasolineAndTown(gasStation)
         GasStationAddressByGasolineAndTown(gasStation)
+        Spacer(modifier = Modifier.height(2.dp))
+        Box(modifier = Modifier
+            .height(1.dp)
+            .fillMaxWidth()
+            .background(colorResource(id = R.color.Gris)))
         PriceGasByGasolineAndTown(gasStation)
 
     }
@@ -64,17 +71,17 @@ fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = nameGasolinaSeleccionada,
+            text = "$nameGasolinaSeleccionada: ",
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.size(3.dp))
+        Spacer(modifier = Modifier.size(8.dp))
         Text(
             text = gasStation.precioProducto + " €",
-            fontSize = 25.sp,
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(
                 id = R.color.NaranjaClaro
-            )
+            ), fontFamily = poppins
         )
     }
 
@@ -84,14 +91,14 @@ fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio) {
 @Composable
 fun GasStationAddressByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = gasStation.direccion, fontSize = 15.sp)
+        Text(text = gasStation.direccion, fontSize = 12.sp, fontFamily = poppins)
     }
 }
 
 @Composable
 fun GasStationTitleByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = gasStation.rotulo, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(text = gasStation.rotulo, fontSize = 18.sp, fontWeight = FontWeight.Bold, fontFamily = poppins)
     }
 }
 

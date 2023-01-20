@@ -12,8 +12,9 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchUi
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 
 
+//COMPOSABLE QUE MANEJA LA NAVEGACION ENTRE LAS PANTALLAS DE LA HOME
 @Composable
-fun NavigationHost(
+fun HomeNavigationHost(
     navController: NavHostController,
     searchViewModel: SearchViewModel,
     mapViewModel: MapViewModel,

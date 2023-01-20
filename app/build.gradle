@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id "kotlin-kapt"
     id "com.google.dagger.hilt.android"
+    id "com.google.android.libraries.mapsplatform.secrets-gradle-plugin"
 
 }
 
@@ -90,6 +91,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.maps.android:maps-compose:2.8.0'
 
+
     //Ads
-    //implementation 'com.google.android.gms:play-services-ads:21.4.0'
+    implementation 'com.google.android.gms:play-services-ads:21.4.0'
 }

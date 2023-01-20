@@ -1,14 +1,20 @@
 package com.jarica.preciogasolina.ui.ui.Components
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
 import com.jarica.preciogasolina.ui.theme.Naranja
+import com.jarica.preciogasolina.ui.theme.poppins
 
 @Composable
 fun BottomNavigationBar(
@@ -19,13 +25,15 @@ fun BottomNavigationBar(
     val currentRoute = currentRoute(navController = navController)
 
     BottomNavigation(
-        backgroundColor = Naranja,
-        contentColor = Color.White,
+        backgroundColor = colorResource(id = com.jarica.preciogasolina.R.color.Beige),
+        contentColor = Naranja,
+        elevation = 0.dp,
+        modifier = Modifier.height(60.dp)
     ) {
         items.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(imageVector = screen.icon, contentDescription = screen.title) },
-                label = { Text(screen.title) },
+                icon = { Icon(painter = painterResource(id = screen.icon), contentDescription = screen.title) },
+                label = { Text(screen.title, fontFamily = poppins)},
                 alwaysShowLabel = true,
                 selected = currentRoute == screen.route,
                 onClick = {

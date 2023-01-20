@@ -1,11 +1,11 @@
 package com.jarica.preciogasolina.ui.ui.Search
 
 
-import android.content.Context
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -16,17 +16,22 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.response.Gasolina
 import com.jarica.preciogasolina.data.network.response.Province
 import com.jarica.preciogasolina.data.network.response.Towns
+import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.ListScreen
 
@@ -35,7 +40,7 @@ import com.jarica.preciogasolina.ui.ui.Navigation.ListScreen
 fun SearchUi(
     searchViewModel: SearchViewModel,
     navController: NavHostController,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
 ) {
 
     val gasoline: String by searchViewModel.gasolineSelected.observeAsState(initial = "")
@@ -60,10 +65,14 @@ fun SearchUi(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .background(colorResource(id = R.color.Beige)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            Spacer(modifier = Modifier.size(16.dp))
+            Texto(stringResource(id = R.string.seleccioneCarburante))
+            Spacer(modifier = Modifier.size(8.dp))
+
             EDTSeleccioneGasStation(
                 gasoline,
                 isGasolineExpanded,
@@ -71,11 +80,15 @@ fun SearchUi(
                 searchViewModel
             )
             if (!isGasolineExpanded) {
-                Spacer(modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.size(8.dp))
+                Texto(stringResource(R.string.seleccioneProvincia))
                 EDTSeleccioneProvincia(province, isProvinceExpanded, ProvinceList, searchViewModel)
 
+
                 if (isProviceSelected && !isProvinceExpanded) {
-                    Spacer(modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Texto(stringResource(R.string.seleccioneMunicipio))
+                    Spacer(modifier = Modifier.size(8.dp))
                     EDTSeleccioneMunicipio(
                         town,
                         isTownExpanded,
@@ -86,18 +99,24 @@ fun SearchUi(
                 }
 
 
-                if (isTownSelected) {
-                    searchButton(navController, listViewModel, gasoline)
+                if (!isTownExpanded && !isProvinceExpanded) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                    BannerAdView()
+                    Spacer(modifier = Modifier.size(16.dp))
+                    SearchButton(navController, listViewModel, gasoline, isTownSelected)
                 }
+
             }
 
         }
     } else {
-        Box( contentAlignment = Alignment.Center, modifier = Modifier
-            .fillMaxSize()
-            .background(
-                colorResource(id = R.color.Naranja)
-            )) {
+        Box(
+            contentAlignment = Alignment.Center, modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    colorResource(id = R.color.Naranja)
+                )
+        ) {
             CircularProgressIndicator()
         }
     }
@@ -107,12 +126,123 @@ fun SearchUi(
 
 
 @Composable
-fun searchButton(
+fun Texto(Texto: String) {
+
+    Text(
+        text = Texto,
+        fontSize = 16.sp,
+        fontFamily = poppins,
+        fontWeight = FontWeight.Normal,
+        color = colorResource(id = R.color.Gris),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+fun EDTSeleccioneGasStation(
+    gasoline: String,
+    isGasolineExpanded: Boolean,
+    gasolineList: List<Gasolina>,
+    searchViewModel: SearchViewModel
+) {
+    TextField(
+        value = gasoline,
+        textStyle = TextStyle(fontFamily = poppins, fontSize = 14.sp),
+        onValueChange = { },
+/*        label = {
+            Text(
+                text = gasoline,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Normal
+            )
+        },*/
+       colors = TextFieldDefaults.outlinedTextFieldColors(
+           backgroundColor = colorResource(id = R.color.GrisClaro),
+           disabledBorderColor = Color.Transparent
+        ),
+        enabled = false,
+        readOnly = true,
+        shape = RoundedCornerShape(10.dp),
+
+        trailingIcon = {
+            if (isGasolineExpanded) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowUp,
+                    contentDescription = ""
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = ""
+                )
+            }
+
+        },
+        modifier = Modifier
+            .clickable {
+                searchViewModel.isGasolineSelected(isGasolineExpanded)
+            }
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+
+    DropdownMenu(
+        expanded = isGasolineExpanded,
+        onDismissRequest = {
+            searchViewModel.onGasolineClicked(isGasolineExpanded)
+            searchViewModel.onDismissGasoline()
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp)
+
+    ) {
+        gasolineList.forEach { label ->
+            DropdownMenuItem(modifier = Modifier.height(25.dp),
+                onClick = {
+                    searchViewModel.onGasolineSelected(label.iDProducto, label.nombreProducto)
+                    searchViewModel.isGasolineSelected(isGasolineExpanded)
+                }) {
+                Text(
+                    text = label.nombreProducto,
+                    fontSize = 11.sp,
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+
+
+        }
+    }
+}
+
+@SuppressLint("MissingPermission")
+@Composable
+fun BannerAdView() {
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth(),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize.MEDIUM_RECTANGLE)
+                // Add your adUnitID, this is for testing.
+                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
+}
+
+
+@Composable
+fun SearchButton(
     navController: NavHostController,
     listViewModel: ListViewModel,
     gasoline: String,
+    isTownSelected: Boolean
 ) {
-    Spacer(modifier = Modifier.size(25.dp))
     Button(
         onClick = {
             if (gasoline.isEmpty()) {
@@ -125,9 +255,12 @@ fun searchButton(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 35.dp)
+            .height(40.dp),
+        enabled = isTownSelected,
+        shape = RoundedCornerShape(10.dp),
     ) {
-        Text(text = stringResource(id = R.string.searchButtton))
+        Text(text = stringResource(id = R.string.searchButtton), fontFamily = poppins)
     }
 }
 
@@ -147,10 +280,22 @@ fun EDTSeleccioneMunicipio(
             .clickable {
                 searchViewModel.onTownClicked(isTownExpanded)
             }
-            .fillMaxWidth(),
-        label = { Text(text = stringResource(id = R.string.seleccioneMunicipio)) },
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+/*        label = {
+            Text(
+                text = stringResource(id = R.string.seleccioneMunicipio),
+                fontFamily = poppins,
+                fontWeight = FontWeight.Normal
+            )
+        },*/
         enabled = false,
         readOnly = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = colorResource(id = R.color.GrisClaro),
+            disabledBorderColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(10.dp),
         trailingIcon = {
             if (isTownExpanded) {
                 Icon(
@@ -170,23 +315,32 @@ fun EDTSeleccioneMunicipio(
 
         expanded = isTownExpanded,
         onDismissRequest = {
-            searchViewModel.onTownClicked(
-                isTownExpanded,
-            )
+            searchViewModel.onTownClicked(isTownExpanded)
+            searchViewModel.onDismissTown()
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(2.dp)
+            .padding(0.dp)
             .height(500.dp)
 
     ) {
         townsList.forEach { label ->
-            DropdownMenuItem(onClick = {
-                searchViewModel.onTownSelected(label.Municipio, isTownSelected, label.IDMunicipio)
-                searchViewModel.onTownClicked(isTownExpanded)
+            DropdownMenuItem(modifier = Modifier.height(25.dp),
+                onClick = {
+                    searchViewModel.onTownSelected(
+                        label.Municipio,
+                        isTownSelected,
+                        label.IDMunicipio
+                    )
+                    searchViewModel.onTownClicked(isTownExpanded)
 
-            }) {
-                Text(text = label.Municipio)
+                }) {
+                Text(
+                    text = label.Municipio,
+                    fontSize = 14.sp,
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.Normal
+                )
             }
         }
     }
@@ -206,10 +360,22 @@ fun EDTSeleccioneProvincia(
             .clickable {
                 searchViewModel.isProvinceSelected(isProvinceExpanded)
             }
-            .fillMaxWidth(),
-        label = { Text(text = stringResource(id = R.string.seleccioneProvincia)) },
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+/*        label = {
+            Text(
+                text = stringResource(id = R.string.seleccioneProvincia),
+                fontFamily = poppins,
+                fontWeight = FontWeight.Normal
+            )
+        },*/
         enabled = false,
         readOnly = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = colorResource(id = R.color.GrisClaro),
+            disabledBorderColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(10.dp),
         trailingIcon = {
             if (isProvinceExpanded) {
                 Icon(
@@ -230,7 +396,6 @@ fun EDTSeleccioneProvincia(
         expanded = isProvinceExpanded,
         onDismissRequest = {
             searchViewModel.isProvinceSelected(isProvinceExpanded)
-
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -239,11 +404,17 @@ fun EDTSeleccioneProvincia(
 
     ) {
         ProvinceList.forEach { label ->
-            DropdownMenuItem(onClick = {
-                searchViewModel.onProvinceSelected(label.Provincia, label.IDProvincia)
-                searchViewModel.isProvinceSelected(isProvinceExpanded)
-            }) {
-                Text(text = label.Provincia, fontSize = 15.sp)
+            DropdownMenuItem(modifier = Modifier.height(25.dp),
+                onClick = {
+                    searchViewModel.onProvinceSelected(label.Provincia, label.IDProvincia)
+                    searchViewModel.isProvinceSelected(isProvinceExpanded)
+                }) {
+                Text(
+                    text = label.Provincia,
+                    fontSize = 14.sp,
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.Normal
+                )
             }
 
 
@@ -252,64 +423,7 @@ fun EDTSeleccioneProvincia(
 }
 
 
-@Composable
-fun EDTSeleccioneGasStation(
-    gasoline: String,
-    isGasolineExpanded: Boolean,
-    gasolineList: List<Gasolina>,
-    searchViewModel: SearchViewModel
-) {
-    OutlinedTextField(
-        value = gasoline,
-        onValueChange = { },
-        modifier = Modifier
-            .clickable {
-                searchViewModel.isGasolineSelected(isGasolineExpanded)
-            }
-            .fillMaxWidth(),
-        label = { Text(text = stringResource(id = R.string.seleccioneCarburante)) },
-        enabled = false,
-        readOnly = true,
-        trailingIcon = {
-            if (isGasolineExpanded) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = ""
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = ""
-                )
-            }
 
-        },
-    )
-
-    DropdownMenu(
-        expanded = isGasolineExpanded,
-        onDismissRequest = {
-            searchViewModel.onGasolineClicked(isGasolineExpanded)
-            searchViewModel.onDismissGasoline()
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(2.dp)
-            .height(500.dp)
-
-    ) {
-        gasolineList.forEach { label ->
-            DropdownMenuItem(onClick = {
-                searchViewModel.onGasolineSelected(label.iDProducto, label.nombreProducto)
-                searchViewModel.isGasolineSelected(isGasolineExpanded)
-            }) {
-                Text(text = label.nombreProducto, fontSize = 15.sp)
-            }
-
-
-        }
-    }
-}
 
 
 
