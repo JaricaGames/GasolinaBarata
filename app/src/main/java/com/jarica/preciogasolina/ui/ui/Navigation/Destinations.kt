@@ -1,41 +1,50 @@
 package com.jarica.preciogasolina.ui.ui.Navigation
 
 import com.jarica.preciogasolina.R
+import com.jarica.preciogasolina.data.network.response.GasolineraPorGasolinaYMunicipio
+import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
 
 sealed class Destinations(
     val route: String,
     val title: String,
     val icon: Int
-)
+) {
 
-object MapScreen : Destinations(
-    "MapScreen",
-    "Mapa",
-    R.drawable.ic_map
-)
+    object MapScreen : Destinations(
+        "MapScreen",
+        "Mapa",
+        R.drawable.ic_map
+    )
 
-object ListScreen : Destinations(
-    "ListScreen",
-    "Lista",
-    R.drawable.ic_list
-)
+    object ListScreen : Destinations(
+        "ListScreen",
+        "Lista",
+        R.drawable.ic_list
+    )
 
-object SearchScreen : Destinations(
-    "SearchScreen",
-    "Buscar",
-    R.drawable.ic_search
-)
+    object SearchScreen : Destinations(
+        "SearchScreen",
+        "Buscar",
+        R.drawable.ic_search
+    )
 
-object SplashScreen : Destinations(
-    "SplashScreen",
-    "SplashScreen",
-    R.drawable.ic_search
-)
+    object SplashScreen : Destinations(
+        "SplashScreen",
+        "SplashScreen",
+        R.drawable.ic_search
+    )
 
-object MainScreenUi : Destinations(
-    "MainScreen",
-    "MainScreen",
-    R.drawable.ic_search
-)
+    object MainScreenUi : Destinations(
+        "MainScreen",
+        "MainScreen",
+        R.drawable.ic_search
+    )
+
+    object DetailScreenUi : Destinations(
+        "DetailScreen",
+        "DetailScreen",
+        R.drawable.ic_search
+    )
+}
 
 

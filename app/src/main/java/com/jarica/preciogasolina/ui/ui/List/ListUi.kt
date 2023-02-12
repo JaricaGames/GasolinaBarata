@@ -1,5 +1,6 @@
 package com.jarica.preciogasolina.ui.ui.List
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,11 +17,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByGasolineAndTown
 import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByTowns
-import com.jarica.preciogasolina.ui.ui.Navigation.SearchScreen
+import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idGasolinaSeleccionada
 
 
@@ -34,11 +39,24 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
         if (gasList.isEmpty()) {
             emptyGasStationList(navController)
         } else {
-            LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
-                items(gasList) { gasStation ->
-                    cardStationByTowns(gasStation)
+            Column(Modifier.fillMaxWidth()) {
+                LazyColumn(
+                    Modifier.padding(top = 6.dp, bottom = 65.dp)) {
+                    var contador = 0
+                    items(gasList) { gasStation ->
+                        contador ++
+                        cardStationByTowns(gasStation)
+                        if(contador%5 == 0){
+                            Spacer(modifier = Modifier.height(10.dp))
+                            BannerAdView()
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    }
                 }
+                BannerAdView()
             }
+
+
         }
     } else {
         if (gasListByGasAndTown.isEmpty()) {
@@ -47,14 +65,38 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
 
         }
         LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
+            var contador = 0
             items(gasListByGasAndTown) { gasStation ->
+                contador ++
                 cardStationByGasolineAndTown(gasStation)
+                if(contador%5 == 0){
+                    Spacer(modifier = Modifier.height(10.dp))
+                    BannerAdView()
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
 
             }
         }
 
     }
 
+}
+
+@SuppressLint("MissingPermission")
+@Composable
+fun BannerAdView() {
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth(),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize.FULL_BANNER)
+                // Add your adUnitID, this is for testing.
+                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }
 
 
@@ -83,8 +125,10 @@ fun emptyGasStationList(navController: NavHostController) {
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.size(32.dp))
-        Button(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            onClick = { navController.navigate(SearchScreen.route) }) {
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+            onClick = { navController.navigate(Destinations.SearchScreen.route) }) {
             Text(
                 text = stringResource(id = R.string.Buttonresult0),
                 fontSize = 17.sp,

@@ -20,20 +20,17 @@ fun MainScreenUi(
     listViewModel: ListViewModel
 ) {
 
-
-
     val navController2 = rememberNavController()
 
     val navigationItems = listOf(
-        SearchScreen,
-        MapScreen,
-        ListScreen
+        Destinations.SearchScreen,
+        Destinations.MapScreen,
+        Destinations.ListScreen
     )
-
 
     Scaffold(
         bottomBar = {
-                BottomNavigationBar(navController = navController2, items = navigationItems)
+            BottomNavigationBar(navController = navController2, items = navigationItems)
         }
     ) {
         HomeNavigationHost(

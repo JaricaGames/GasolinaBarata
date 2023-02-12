@@ -27,10 +27,7 @@ class ListViewModel @Inject constructor(private val mainRepository: MainReposito
         viewModelScope.launch {
             _gasList.value =
                 mainRepository.getGasStationsByTowns(ID = idMunicipioSeleccionado)
-
-
         }
-
 
     }
 

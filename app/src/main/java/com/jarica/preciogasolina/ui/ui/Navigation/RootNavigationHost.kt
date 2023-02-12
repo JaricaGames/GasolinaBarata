@@ -21,13 +21,13 @@ fun RootNavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = SplashScreen.route
+        startDestination = Destinations.SplashScreen.route
     ) {
 
-        composable(SplashScreen.route) {
+        composable(Destinations.SplashScreen.route) {
             SplashScreenUi(navController)
         }
-        composable(MainScreenUi.route) {
+        composable(Destinations.MainScreenUi.route) {
             MainScreenUi(searchViewModel, mapViewModel, listViewModel)
         }
     }
