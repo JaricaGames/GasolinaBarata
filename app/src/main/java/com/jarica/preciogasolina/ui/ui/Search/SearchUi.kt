@@ -33,7 +33,7 @@ import com.jarica.preciogasolina.data.network.response.Province
 import com.jarica.preciogasolina.data.network.response.Towns
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.Navigation.ListScreen
+import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
 
 
 @Composable
@@ -151,16 +151,9 @@ fun EDTSeleccioneGasStation(
         value = gasoline,
         textStyle = TextStyle(fontFamily = poppins, fontSize = 14.sp),
         onValueChange = { },
-/*        label = {
-            Text(
-                text = gasoline,
-                fontFamily = poppins,
-                fontWeight = FontWeight.Normal
-            )
-        },*/
-       colors = TextFieldDefaults.outlinedTextFieldColors(
-           backgroundColor = colorResource(id = R.color.GrisClaro),
-           disabledBorderColor = Color.Transparent
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = colorResource(id = R.color.GrisClaro),
+            disabledBorderColor = Color.Transparent
         ),
         enabled = false,
         readOnly = true,
@@ -207,7 +200,77 @@ fun EDTSeleccioneGasStation(
                 }) {
                 Text(
                     text = label.nombreProducto,
-                    fontSize = 11.sp,
+                    fontSize = 14.sp,
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+
+
+        }
+    }
+}
+
+@Composable
+fun EDTSeleccioneProvincia(
+    province: String,
+    isProvinceExpanded: Boolean,
+    ProvinceList: List<Province>,
+    searchViewModel: SearchViewModel
+) {
+    OutlinedTextField(
+        value = province,
+        onValueChange = { searchViewModel.onProvinceSelectedChanged(province) },
+        modifier = Modifier
+            .clickable {
+                searchViewModel.isProvinceSelected(isProvinceExpanded)
+                searchViewModel.onDismissProvince()
+            }
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        enabled = false,
+        readOnly = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = colorResource(id = R.color.GrisClaro),
+            disabledBorderColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(10.dp),
+        trailingIcon = {
+            if (isProvinceExpanded) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowUp,
+                    contentDescription = ""
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = ""
+                )
+            }
+
+        },
+    )
+
+    DropdownMenu(
+        expanded = isProvinceExpanded,
+        onDismissRequest = {
+            searchViewModel.isProvinceSelected(isProvinceExpanded)
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(2.dp)
+            .height(500.dp)
+
+    ) {
+        ProvinceList.forEach { label ->
+            DropdownMenuItem(modifier = Modifier.height(25.dp),
+                onClick = {
+                    searchViewModel.onProvinceSelected(label.Provincia, label.IDProvincia)
+                    searchViewModel.isProvinceSelected(isProvinceExpanded)
+                }) {
+                Text(
+                    text = label.Provincia,
+                    fontSize = 14.sp,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Normal
                 )
@@ -246,10 +309,10 @@ fun SearchButton(
     Button(
         onClick = {
             if (gasoline.isEmpty()) {
-                navController.navigate(ListScreen.route)
+                navController.navigate(Destinations.ListScreen.route)
                 listViewModel.getGasStationsByTowns()
             } else {
-                navController.navigate(ListScreen.route)
+                navController.navigate(Destinations.ListScreen.route)
                 listViewModel.getGasStationsByTownsAndGasoline()
             }
         },
@@ -282,13 +345,6 @@ fun EDTSeleccioneMunicipio(
             }
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-/*        label = {
-            Text(
-                text = stringResource(id = R.string.seleccioneMunicipio),
-                fontFamily = poppins,
-                fontWeight = FontWeight.Normal
-            )
-        },*/
         enabled = false,
         readOnly = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -346,81 +402,7 @@ fun EDTSeleccioneMunicipio(
     }
 }
 
-@Composable
-fun EDTSeleccioneProvincia(
-    province: String,
-    isProvinceExpanded: Boolean,
-    ProvinceList: List<Province>,
-    searchViewModel: SearchViewModel
-) {
-    OutlinedTextField(
-        value = province,
-        onValueChange = { searchViewModel.onProvinceSelectedChanged(province) },
-        modifier = Modifier
-            .clickable {
-                searchViewModel.isProvinceSelected(isProvinceExpanded)
-            }
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-/*        label = {
-            Text(
-                text = stringResource(id = R.string.seleccioneProvincia),
-                fontFamily = poppins,
-                fontWeight = FontWeight.Normal
-            )
-        },*/
-        enabled = false,
-        readOnly = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            backgroundColor = colorResource(id = R.color.GrisClaro),
-            disabledBorderColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(10.dp),
-        trailingIcon = {
-            if (isProvinceExpanded) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = ""
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = ""
-                )
-            }
 
-        },
-    )
-
-    DropdownMenu(
-        expanded = isProvinceExpanded,
-        onDismissRequest = {
-            searchViewModel.isProvinceSelected(isProvinceExpanded)
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(2.dp)
-            .height(500.dp)
-
-    ) {
-        ProvinceList.forEach { label ->
-            DropdownMenuItem(modifier = Modifier.height(25.dp),
-                onClick = {
-                    searchViewModel.onProvinceSelected(label.Provincia, label.IDProvincia)
-                    searchViewModel.isProvinceSelected(isProvinceExpanded)
-                }) {
-                Text(
-                    text = label.Provincia,
-                    fontSize = 14.sp,
-                    fontFamily = poppins,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-
-
-        }
-    }
-}
 
 
 

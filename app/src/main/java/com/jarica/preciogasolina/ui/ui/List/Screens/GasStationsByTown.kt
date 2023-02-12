@@ -1,47 +1,206 @@
 package com.jarica.preciogasolina.ui.ui.List.Screens
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
+
 
 @Composable
 fun cardStationByTowns(
     gasStation: GasolineraPorMunicipio
 ) {
 
-    Card(
-        elevation = 8.dp, modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 4.dp)
-            .fillMaxWidth(), backgroundColor = colorResource(id = R.color.Beige)
-    ) {
-        Row(Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
-            ImageLogoByTown(gasStation, Modifier)
-            GasStationTextByTown(gasStation)
-        }
+    var isSelectedCard = rememberSaveable { mutableStateOf(false) }
+    var context = LocalContext.current
 
+    Card(
+        elevation = 1.dp,
+        modifier =
+        Modifier
+            .padding(horizontal = 10.dp, vertical = 4.dp)
+            .fillMaxWidth()
+            .animateContentSize(animationSpec = tween(200, 0, LinearEasing)),
+        backgroundColor = colorResource(id = R.color.Beige)
+    ) {
+        Column() {
+            Row(
+                Modifier
+                    .padding(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ImageLogoByTown(gasStation, Modifier)
+                GasStationTextByTown(gasStation, isSelectedCard)
+
+            }
+            if (isSelectedCard.value) {
+                MasInfoCard(gasStation)
+                Spacer(modifier = Modifier.size(8.dp))
+                GoogleMapCardInfoByTown(
+                    Modifier
+                        .size(250.dp, 250.dp)
+                        .align(Alignment.CenterHorizontally),
+                    gasStation
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                NavegateButtonByTown(
+                    Modifier.align(Alignment.CenterHorizontally),
+                    gasStation,
+                    context
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun GoogleMapCardInfoByTown(modifier: Modifier, gasStation: GasolineraPorMunicipio) {
+
+    val gasStationPosition =
+        LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(gasStationPosition, 17f)
+    }
+
+    GoogleMap(
+        modifier = modifier,
+        cameraPositionState = cameraPositionState,
+        uiSettings = MapUiSettings(zoomControlsEnabled = false)
+    ) {
+        Marker(
+            state = MarkerState(position = gasStationPosition),
+            title = gasStation.rotulo
+        )
     }
 }
 
 @Composable
-fun GasStationTextByTown(
-    gasStation: GasolineraPorMunicipio
+fun NavegateButtonByTown(
+    modifier: Modifier,
+    gasStation: GasolineraPorMunicipio,
+    context: Context
 ) {
+    Button(
+        modifier = modifier,
+        onClick = { lanzarMapsByTown(gasStation, context) }) {
+        Icon(
+            imageVector = Icons.Filled.Place,
+            contentDescription = "",
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        Text(
+            text = "Navegar",
+            fontSize = 14.sp,
+            fontFamily = poppins,
+            fontWeight = FontWeight.Normal
+        )
+    }
+}
+
+fun lanzarMapsByTown(gasStation: GasolineraPorMunicipio, context: Context) {
+
+    var latitud = gasStation.latitud
+    var longitud = gasStation.longitud
+    val gmmIntentUri =
+        Uri.parse("google.navigation:q=$latitud,$longitud")
+    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+    mapIntent.setPackage("com.google.android.apps.maps")
+    ContextCompat.startActivity(context, mapIntent, bundleOf())
+}
+
+@Composable
+fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
+    Column(Modifier.padding(horizontal = 8.dp)) {
+        Row() {
+            Text(
+                text = "Poblacion: ",
+                fontFamily = poppins,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = gasStation.localidad,
+                fontFamily = poppins,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Light
+            )
+        }
+        Row() {
+            Text(
+                text = "Provincia: ",
+                fontFamily = poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = gasStation.provincia,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp
+            )
+        }
+        Row() {
+            Text(
+                text = "Horario: ",
+                fontFamily = poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = gasStation.horario,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp
+            )
+        }
+    }
+
+
+}
+
+
+@Composable
+fun GasStationTextByTown(
+    gasStation: GasolineraPorMunicipio,
+    isSelectedCard: MutableState<Boolean>,
+
+    ) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -49,14 +208,41 @@ fun GasStationTextByTown(
         GasStationTitle(gasStation)
         GasStationAddress(gasStation)
         Spacer(modifier = Modifier.height(2.dp))
-        Box(modifier = Modifier
-            .height(1.dp)
-            .fillMaxWidth()
-            .background(colorResource(id = R.color.Gris))) {
-            
-        }
+        Box(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+                .background(colorResource(id = R.color.GrisClaro))
+        )
+        Spacer(modifier = Modifier.height(2.dp))
         PriceGas(gasStation)
+        TextoMas(isSelectedCard, Modifier.align(Alignment.End))
 
+
+    }
+}
+
+@Composable
+fun TextoMas(isSelectedCard: MutableState<Boolean>, align: Modifier) {
+    Row(
+        align.clickable { isSelectedCard.value = !isSelectedCard.value },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(modifier = Modifier.size(25.dp, 25.dp),
+            onClick = { isSelectedCard.value = !isSelectedCard.value }) {
+            Icon(
+                Icons.Filled.ArrowDropDown, "",
+                Modifier.rotate(
+                    if (isSelectedCard.value) 180f else 360f
+                )
+            )
+
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+        if (isSelectedCard.value) Text(
+            text = "Menos Info...",
+            fontSize = 12.sp
+        ) else Text(text = "Mas Info...", fontSize = 12.sp)
     }
 }
 

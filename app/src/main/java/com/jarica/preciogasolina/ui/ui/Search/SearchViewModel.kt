@@ -130,4 +130,9 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
         nameGasolinaSeleccionada = ""
     }
 
+    fun onDismissProvince() {
+        _provinceSelected.value = ""
+        _isProvinceSelected.value = false
+    }
+
 }

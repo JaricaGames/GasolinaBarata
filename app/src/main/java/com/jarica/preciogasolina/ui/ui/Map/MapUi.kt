@@ -1,15 +1,18 @@
 package com.jarica.preciogasolina.ui.ui.Map
 
+import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -36,9 +39,10 @@ fun MapUi(mapViewModel: MapViewModel, listViewModel: ListViewModel) {
 
 
 
-    Box(
+    Column(
         Modifier.fillMaxSize(),
     ) {
+        BannerAdView()
         MyGoogleMap(
             gasolineList,
             gasolineListByGasAndTown,
@@ -49,6 +53,24 @@ fun MapUi(mapViewModel: MapViewModel, listViewModel: ListViewModel) {
         )
     }
 
+}
+
+
+@SuppressLint("MissingPermission")
+@Composable
+fun BannerAdView() {
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth(),
+        factory = { context ->
+            AdView(context).apply {
+                setAdSize(AdSize.FULL_BANNER)
+                // Add your adUnitID, this is for testing.
+                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }
 
 @Composable
@@ -82,7 +104,7 @@ fun MyGoogleMap(
                 Marker(
                     rememberMarkerState(position = position),
                     title = gasolinera.rotulo,
-                    //icon = mapViewModel.BitmapFromVector(context, com.jarica.preciogasolina.R.drawable.ic_marker),
+                    icon = mapViewModel.BitmapFromVector(context, com.jarica.preciogasolina.R.drawable.ic_marker),
                     snippet = gasolinera.direccion
                 )
 
