@@ -48,8 +48,7 @@ fun MapUi(mapViewModel: MapViewModel, listViewModel: ListViewModel) {
             gasolineListByGasAndTown,
             mapViewModel,
             mapProperties,
-            cameraPositionState2,
-            LocalContext.current
+            cameraPositionState2
         )
     }
 
@@ -79,8 +78,7 @@ fun MyGoogleMap(
     gasolineListByGasAndTown: List<GasolineraPorGasolinaYMunicipio>,
     mapViewModel: MapViewModel,
     mapProperties: MapProperties,
-    cameraPositionState: CameraPositionState,
-    context: Context
+    cameraPositionState: CameraPositionState
 ) {
     GoogleMap(
         modifier = Modifier
@@ -104,11 +102,11 @@ fun MyGoogleMap(
                 Marker(
                     rememberMarkerState(position = position),
                     title = gasolinera.rotulo,
-                    icon = mapViewModel.BitmapFromVector(context, com.jarica.preciogasolina.R.drawable.ic_marker),
                     snippet = gasolinera.direccion
                 )
 
             }
+            mapViewModel.restartBounds()
         }
         if (!gasolineListByGasAndTown.isNullOrEmpty()) {
             mapViewModel.getCoordenatesByGasAndTown(gasolineListByGasAndTown)

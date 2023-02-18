@@ -99,8 +99,10 @@ fun NavegateButtonByGasolineAndTown(
 
 fun lanzarMapsByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio, context: Context) {
 
-    var latitud = gasStation.latitud
-    var longitud = gasStation.longitud
+    val gasStationPosition =
+        LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
+    var latitud = gasStationPosition.latitude
+    var longitud = gasStationPosition.longitude
     val gmmIntentUri =
         Uri.parse("google.navigation:q=$latitud,$longitud")
     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)

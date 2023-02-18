@@ -1,5 +1,6 @@
 package com.jarica.preciogasolina.ui.ui.SplashScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -9,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,14 +36,37 @@ fun SplashScreenUi(
         verticalArrangement = Arrangement.Center
     ) {
 
-
         Text(
-            text = "CARGANDO DATOS  ...",
+            text = "GASOLINERAS DE ESPAÑA",
             fontFamily = poppins,
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 18.sp,
+            fontSize = 28.sp,
             color = colorResource(id = R.color.white)
         )
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.sin_t_tulo_1),
+            contentDescription = "",
+            modifier = Modifier.padding(horizontal = 100.dp)
+        )
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+
+        Text(
+            text = "CARGANDO DATOS",
+            fontFamily = poppins,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 16.sp,
+            color = colorResource(id = R.color.white)
+        )
+        Box(modifier = Modifier.size(100.dp)) {
+            LottieAnimation()
+        }
+
+
     }
 
     LaunchedEffect(key1 = true) {
@@ -54,7 +79,7 @@ fun SplashScreenUi(
 @Composable
 fun LottieAnimation() {
     val compositeResult: LottieCompositionResult =
-        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.wondercar))
+        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading))
     val progressAnimation by animateLottieCompositionAsState(
         compositeResult.value,
         isPlaying = true,
