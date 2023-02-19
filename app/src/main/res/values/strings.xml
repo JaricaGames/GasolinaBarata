@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PrecioGasolina</string>
+    <string name="app_name">Gasolineras de España</string>
     <string name="seleccioneCarburante">Seleccione Carburante (SI DESEA)</string>
     <string name="seleccioneProvincia">Seleccione una Provincia</string>
     <string name="seleccioneMunicipio">Seleccione un municipio</string>

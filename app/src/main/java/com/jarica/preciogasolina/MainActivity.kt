@@ -13,10 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.jarica.preciogasolina.ui.theme.PrecioGasolinaTheme
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.MainScreenUi
 import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.RootNavigationHost
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
+import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
     private val searchViewModel:SearchViewModel by viewModels()
     private val mapViewModel: MapViewModel by viewModels()
     private val listViewModel:ListViewModel by viewModels()
+    private val splashScreenViewModel:SplashScreenViewModel by viewModels()
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
                         searchViewModel = searchViewModel,
                         mapViewModel = mapViewModel,
                         listViewModel = listViewModel,
+                        splashScreenViewModel = splashScreenViewModel
                     )
                 }
             }

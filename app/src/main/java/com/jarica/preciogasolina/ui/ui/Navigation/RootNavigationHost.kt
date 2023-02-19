@@ -9,6 +9,7 @@ import com.jarica.preciogasolina.ui.ui.MainScreenUi
 import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenUi
+import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenViewModel
 
 
 //COMPOSABLE QUE MANEJA LA NAVEGACION ENTRE LA SPLASH SCREEN Y LA MAINUI
@@ -17,7 +18,8 @@ fun RootNavigationHost(
     navController: NavHostController,
     searchViewModel: SearchViewModel,
     mapViewModel: MapViewModel,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
+    splashScreenViewModel: SplashScreenViewModel
 ) {
     NavHost(
         navController = navController,
@@ -25,7 +27,7 @@ fun RootNavigationHost(
     ) {
 
         composable(Destinations.SplashScreen.route) {
-            SplashScreenUi(navController)
+            SplashScreenUi(navController, splashScreenViewModel)
         }
         composable(Destinations.MainScreenUi.route) {
             MainScreenUi(searchViewModel, mapViewModel, listViewModel)

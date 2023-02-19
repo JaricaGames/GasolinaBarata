@@ -21,11 +21,7 @@ class MapViewModel @Inject constructor(): ViewModel() {
     private val _mapProperties = MutableLiveData<MapProperties>()
     val mapProperties: LiveData<MapProperties> = _mapProperties
 
-    private val _cameraPositionState = MutableLiveData<CameraPositionState>()
-    val cameraPositionState: LiveData<CameraPositionState> = _cameraPositionState
 
-    private val _cameraPosition = MutableLiveData<LatLng>()
-    val cameraPosition: LiveData<LatLng> = _cameraPosition
 
 
     fun replaceString(coordenada: String): Double {
@@ -37,13 +33,11 @@ class MapViewModel @Inject constructor(): ViewModel() {
 
         var latitud = replaceString(gasolineList[0].latitud)
         var longitud = replaceString(gasolineList[0].longitud)
-        _cameraPositionState.value = CameraPositionState(position = CameraPosition.fromLatLngZoom(LatLng(latitud, longitud),12f) )
     }
 
     fun getCoordenatesByGasAndTown(gasolineListByGasAndTown: List<GasolineraPorGasolinaYMunicipio>) {
         var latitud = replaceString(gasolineListByGasAndTown[0].latitud)
         var longitud = replaceString(gasolineListByGasAndTown[0].longitud)
-        _cameraPositionState.value = CameraPositionState(position = CameraPosition.fromLatLngZoom(LatLng(latitud, longitud),12f) )
     }
 
 

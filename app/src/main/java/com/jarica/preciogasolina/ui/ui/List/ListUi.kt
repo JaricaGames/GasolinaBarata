@@ -112,7 +112,7 @@ fun emptyGasStationList(navController: NavHostController) {
             painter = painterResource(id = R.drawable.ic_undrawsearching),
             contentDescription = "default"
         )
-        Spacer(modifier = Modifier.size(32.dp))
+        Spacer(modifier = Modifier.size(40.dp))
         Text(
             text = stringResource(id = R.string.result0),
             fontSize = 18.sp,

@@ -3,6 +3,9 @@ package com.jarica.preciogasolina.ui.ui.List.Screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,11 +44,12 @@ fun cardStationByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
     var context = LocalContext.current
 
     Card(
-        elevation = 1.dp,
+        elevation = 10.dp,
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 4.dp)
             .fillMaxWidth(),
-        backgroundColor = colorResource(id = R.color.Beige)
+        backgroundColor = colorResource(id = R.color.Beige),
+
     ) {
         Column() {
 
@@ -63,7 +67,11 @@ fun cardStationByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
                     gasStation
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                NavegateButtonByGasolineAndTown(Modifier.align(Alignment.CenterHorizontally), gasStation, context )
+                NavegateButtonByGasolineAndTown(
+                    Modifier.align(Alignment.CenterHorizontally),
+                    gasStation,
+                    context
+                )
                 Spacer(modifier = Modifier.size(8.dp))
             }
         }
@@ -116,7 +124,10 @@ fun replaceString(coordenada: String): Double {
 }
 
 @Composable
-fun GoogleMapCardInfoByGasolineAndTown(modifier: Modifier, gasStation: GasolineraPorGasolinaYMunicipio) {
+fun GoogleMapCardInfoByGasolineAndTown(
+    modifier: Modifier,
+    gasStation: GasolineraPorGasolinaYMunicipio
+) {
 
     val gasStationPosition =
         LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
@@ -138,8 +149,8 @@ fun GoogleMapCardInfoByGasolineAndTown(modifier: Modifier, gasStation: Gasoliner
 
 @Composable
 fun MasInfoCardByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
-    Column(Modifier.padding(horizontal = 8.dp)) {
-        Row() {
+    Column(Modifier.padding(horizontal = 16.dp)) {
+        Row {
             Text(
                 text = "Poblacion: ",
                 fontFamily = poppins,
@@ -167,7 +178,7 @@ fun MasInfoCardByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
                 fontSize = 14.sp
             )
         }
-        Row() {
+        Row {
             Text(
                 text = "Horario: ",
                 fontFamily = poppins,
