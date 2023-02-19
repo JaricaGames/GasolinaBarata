@@ -1,16 +1,25 @@
 package com.jarica.preciogasolina.ui.ui.SplashScreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,14 +28,20 @@ import com.airbnb.lottie.compose.*
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 
-const val SPLASHSCREEN_DURATION = 3000L
+const val SPLASHSCREEN_DURATION = 4000L
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SplashScreenUi(
-    navController: NavHostController
+    navController: NavHostController,
+    splashScreenViewModel: SplashScreenViewModel
 ) {
+    val progressIndicator: Float by splashScreenViewModel.progressIndicator.observeAsState(initial = 0f)
+    splashScreenViewModel.progressIndicator()
+
+
 
     Column(
         modifier = Modifier
@@ -39,12 +54,13 @@ fun SplashScreenUi(
         Text(
             text = "GASOLINERAS DE ESPAÑA",
             fontFamily = poppins,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Bold,
             fontSize = 28.sp,
-            color = colorResource(id = R.color.white)
+            color = colorResource(id = R.color.white),
+
         )
 
-        Spacer(modifier = Modifier.size(16.dp))
+        Spacer(modifier = Modifier.size(24.dp))
 
         Image(
             painter = painterResource(id = R.drawable.sin_t_tulo_1),
@@ -58,14 +74,22 @@ fun SplashScreenUi(
         Text(
             text = "CARGANDO DATOS",
             fontFamily = poppins,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             color = colorResource(id = R.color.white)
         )
-        Box(modifier = Modifier.size(100.dp)) {
-            LottieAnimation()
-        }
 
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(
+            text = (progressIndicator * 100).toInt().toString() + " %",
+            fontFamily = poppins,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            color = colorResource(id = R.color.white)
+        )
+        LinearProgressIndicator(
+            progress = progressIndicator, color = colorResource(id = R.color.white)
+        )
 
     }
 
@@ -76,15 +100,3 @@ fun SplashScreenUi(
     }
 }
 
-@Composable
-fun LottieAnimation() {
-    val compositeResult: LottieCompositionResult =
-        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading))
-    val progressAnimation by animateLottieCompositionAsState(
-        compositeResult.value,
-        isPlaying = true,
-        iterations = LottieConstants.IterateForever,
-        speed = 1.0f
-    )
-    LottieAnimation(composition = compositeResult.value, progress = progressAnimation)
-}

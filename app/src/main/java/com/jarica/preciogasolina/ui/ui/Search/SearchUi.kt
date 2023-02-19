@@ -82,6 +82,7 @@ fun SearchUi(
             if (!isGasolineExpanded) {
                 Spacer(modifier = Modifier.size(8.dp))
                 Texto(stringResource(R.string.seleccioneProvincia))
+                Spacer(modifier = Modifier.size(8.dp))
                 EDTSeleccioneProvincia(province, isProvinceExpanded, ProvinceList, searchViewModel)
 
 

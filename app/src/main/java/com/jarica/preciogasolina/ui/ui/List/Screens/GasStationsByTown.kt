@@ -48,13 +48,13 @@ fun cardStationByTowns(
     var context = LocalContext.current
 
     Card(
-        elevation = 1.dp,
+        elevation = 10.dp,
         modifier =
         Modifier
             .padding(horizontal = 10.dp, vertical = 4.dp)
             .fillMaxWidth()
-            .animateContentSize(animationSpec = tween(200, 0, LinearEasing)),
-        backgroundColor = colorResource(id = R.color.Beige)
+            //.animateContentSize(animationSpec = tween(200, 0, LinearEasing)),
+        ,backgroundColor = colorResource(id = R.color.Beige)
     ) {
         Column() {
             Row(
@@ -146,8 +146,8 @@ fun lanzarMapsByTown(gasStation: GasolineraPorMunicipio, context: Context) {
 
 @Composable
 fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
-    Column(Modifier.padding(horizontal = 8.dp)) {
-        Row() {
+    Column(Modifier.padding(horizontal = 16.dp)) {
+        Row {
             Text(
                 text = "Poblacion: ",
                 fontFamily = poppins,
@@ -161,7 +161,7 @@ fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
                 fontWeight = FontWeight.Light
             )
         }
-        Row() {
+        Row{
             Text(
                 text = "Provincia: ",
                 fontFamily = poppins,
