@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "694820143287",
+    "project_id": "gasolinerasdeespana",
+    "storage_bucket": "gasolinerasdeespana.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694820143287:android:ae8cea3b6e22bf9714cd32",
+        "android_client_info": {
+          "package_name": "com.jarica.preciogasolina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694820143287-atrrckdc5etp74n0t9o1uc3lsr9o7vs2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jarica.preciogasolina",
+            "certificate_hash": "3f56a39406f942be731fceb18405a763931ed6a8"
+          }
+        },
+        {
+          "client_id": "694820143287-8k0j0mu3216u46ctep6sqmbv9eqhafj4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgYwm05LTgmx0AsmHiBY6dGqMj36Fusgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694820143287-8k0j0mu3216u46ctep6sqmbv9eqhafj4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

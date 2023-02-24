@@ -8,9 +8,6 @@ import retrofit2.http.Path
 
 interface MainClient {
 
-    @GET("EstacionesTerrestres/")
-    suspend fun getGasolineras():Response<GasByTownResponse>
-
     @GET("Listados/Provincias/")
      suspend fun getProvincias(): List<Province>
 

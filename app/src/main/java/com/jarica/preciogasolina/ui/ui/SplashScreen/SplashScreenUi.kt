@@ -52,7 +52,7 @@ fun SplashScreenUi(
     ) {
 
         Text(
-            text = "GASOLINERAS DE ESPAÑA",
+            text = "GASOLINA BARATA",
             fontFamily = poppins,
             fontWeight = FontWeight.Bold,
             fontSize = 28.sp,

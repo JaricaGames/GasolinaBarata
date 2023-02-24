@@ -49,7 +49,7 @@ fun SearchUi(
 
     val province: String by searchViewModel.provinceSelected.observeAsState(initial = "")
     val isProvinceExpanded: Boolean by searchViewModel.isProvinceExpanded.observeAsState(initial = false)
-    val ProvinceList by searchViewModel.provincesList.observeAsState(listOf())
+    val provinceList by searchViewModel.provincesList.observeAsState(listOf())
     val isProviceSelected: Boolean by searchViewModel.isProvinceSelected.observeAsState(initial = false)
 
     val town: String by searchViewModel.townSelected.observeAsState(initial = "")
@@ -83,7 +83,7 @@ fun SearchUi(
                 Spacer(modifier = Modifier.size(8.dp))
                 Texto(stringResource(R.string.seleccioneProvincia))
                 Spacer(modifier = Modifier.size(8.dp))
-                EDTSeleccioneProvincia(province, isProvinceExpanded, ProvinceList, searchViewModel)
+                EDTSeleccioneProvincia(province, isProvinceExpanded, provinceList, searchViewModel)
 
 
                 if (isProviceSelected && !isProvinceExpanded) {
@@ -291,8 +291,7 @@ fun BannerAdView() {
         factory = { context ->
             AdView(context).apply {
                 setAdSize(AdSize.MEDIUM_RECTANGLE)
-                // Add your adUnitID, this is for testing.
-                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                adUnitId = "ca-app-pub-4979320410432560/7752668839"
                 loadAd(AdRequest.Builder().build())
             }
         }
