@@ -1,12 +1,11 @@
-- Hacer el municipio escribible.    -> SOLUCIONADO, bajndo tamaño dropdownMenu
 - Cambiar icono del marker.
-- Splash screen. -> CREADA, falta maquearla.
 - Pantalla de cada gasolinera al pinchar sobre el RV.
 - Añadir mas gasolinas al RV (solo hay 4).  -> SOLUCIONADO
-- Mejorar la informacion de los markers.
 - PUBLICIDAD. // HECHO, pendiente de los intersticials.
 
 
 MODO PRO
 -------- HAcer un cluster con los marks
 -------- Poder seleccionar por rutas
+-------- Favoritos
+-------- Terminos y condiciones

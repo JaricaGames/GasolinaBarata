@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gasolineras de España</string>
+    <string name="app_name">Gasolina barata</string>
     <string name="seleccioneCarburante">Seleccione Carburante (SI DESEA)</string>
     <string name="seleccioneProvincia">Seleccione una Provincia</string>
     <string name="seleccioneMunicipio">Seleccione un municipio</string>
@@ -23,10 +23,6 @@
     <string name="precioBiodiesel">BioDiesel: </string>
     <string name="precioGNC">GNC: </string>
     <string name="precioGLP">GLP: </string>
-
-
-    <string name="id_Admob">ca-app-pub-3940256099942544~3347511713</string>
-
 
 
 </resources>

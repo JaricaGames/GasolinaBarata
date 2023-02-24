@@ -1,21 +1,10 @@
 package com.jarica.preciogasolina.data.network
 
-import android.util.Log
 import com.jarica.preciogasolina.data.network.response.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MainService @Inject constructor(private val mainClient: MainClient) {
-
-
-    suspend fun getEstaciones(): GasByTownResponse {
-        return withContext(Dispatchers.IO) {
-            val response = mainClient.getGasolineras()
-            Log.i("Nono", response.body().toString())
-            response.body()!!
-        }
-    }
-
 
     suspend fun getProvincias(): List<Province> {
         return withContext(Dispatchers.IO) {
@@ -35,8 +24,6 @@ class MainService @Inject constructor(private val mainClient: MainClient) {
 
         return withContext(Dispatchers.IO) {
             val response = mainClient.getGasStationsByTown(ID)
-            Log.i("Nono2", response.body().toString())
-            Log.i("Nono3", response.body()!!.ListaEESSPrecio.toString())
             response.body()!!.ListaEESSPrecio
         }
     }
@@ -53,7 +40,6 @@ class MainService @Inject constructor(private val mainClient: MainClient) {
 
         return withContext(Dispatchers.IO) {
             val response = mainClient.getGasStationsByTownAndGasoline(idTown,idGasoline)
-            Log.i("nono", response.body()!!.ListaEESSPrecio.toString())
             response.body()!!.ListaEESSPrecio
         }
     }

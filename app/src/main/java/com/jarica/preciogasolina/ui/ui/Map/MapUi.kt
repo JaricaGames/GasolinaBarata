@@ -65,7 +65,7 @@ fun BannerAdView() {
             AdView(context).apply {
                 setAdSize(AdSize.FULL_BANNER)
                 // Add your adUnitID, this is for testing.
-                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                adUnitId = "ca-app-pub-4979320410432560/7752668839"
                 loadAd(AdRequest.Builder().build())
             }
         }
@@ -89,7 +89,6 @@ fun MyGoogleMap(
     ) {
 
         if (!gasolineList.isNullOrEmpty()) {
-            mapViewModel.getCoordenatesByTown(gasolineList)
             gasolineList.forEach { gasolinera ->
 
                 var longitud = mapViewModel.replaceString(gasolinera.longitud)
@@ -109,7 +108,7 @@ fun MyGoogleMap(
             mapViewModel.restartBounds()
         }
         if (!gasolineListByGasAndTown.isNullOrEmpty()) {
-            mapViewModel.getCoordenatesByGasAndTown(gasolineListByGasAndTown)
+
 
             gasolineListByGasAndTown.forEach { gasolinera ->
                 var longitud = mapViewModel.replaceString(gasolinera.longitud)

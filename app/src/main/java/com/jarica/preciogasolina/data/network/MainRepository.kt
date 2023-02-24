@@ -6,8 +6,6 @@ import javax.inject.Inject
 
 class MainRepository @Inject constructor(private val api:MainService) {
 
-
-
     suspend fun getProvincias(): List<Province> {
         return api.getProvincias()
     }

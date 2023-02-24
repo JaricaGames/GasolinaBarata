@@ -29,18 +29,6 @@ class MapViewModel @Inject constructor(): ViewModel() {
         return coordenadaOK.toDouble()
     }
 
-    fun getCoordenatesByTown(gasolineList: List<GasolineraPorMunicipio>){
-
-        var latitud = replaceString(gasolineList[0].latitud)
-        var longitud = replaceString(gasolineList[0].longitud)
-    }
-
-    fun getCoordenatesByGasAndTown(gasolineListByGasAndTown: List<GasolineraPorGasolinaYMunicipio>) {
-        var latitud = replaceString(gasolineListByGasAndTown[0].latitud)
-        var longitud = replaceString(gasolineListByGasAndTown[0].longitud)
-    }
-
-
 
     var sWBound = LatLng(100.0, 100.0)
     var nEBound = LatLng(-100.0, -100.0)
