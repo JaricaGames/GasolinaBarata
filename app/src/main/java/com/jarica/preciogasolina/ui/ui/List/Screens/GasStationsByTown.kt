@@ -3,9 +3,6 @@ package com.jarica.preciogasolina.ui.ui.List.Screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -30,21 +28,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.jarica.preciogasolina.R
-import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
+import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.ui.theme.poppins
+import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun cardStationByTowns(
-    gasStation: GasolineraPorMunicipio
+    gasStation: GasolineraPorMunicipio,
+    listViewModel: ListViewModel
 ) {
 
     var isSelectedCard = rememberSaveable { mutableStateOf(false) }
+    var isSelectedFav = rememberSaveable { mutableStateOf(false) }
     var context = LocalContext.current
 
     Card(
@@ -53,8 +58,8 @@ fun cardStationByTowns(
         Modifier
             .padding(horizontal = 10.dp, vertical = 4.dp)
             .fillMaxWidth()
-            //.animateContentSize(animationSpec = tween(200, 0, LinearEasing)),
-        ,backgroundColor = colorResource(id = R.color.Beige)
+        //.animateContentSize(animationSpec = tween(200, 0, LinearEasing)),
+        , backgroundColor = colorResource(id = R.color.Beige)
     ) {
         Column() {
             Row(
@@ -63,7 +68,7 @@ fun cardStationByTowns(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ImageLogoByTown(gasStation, Modifier)
-                GasStationTextByTown(gasStation, isSelectedCard)
+                GasStationTextByTown(listViewModel, gasStation, isSelectedCard, isSelectedFav)
 
             }
             if (isSelectedCard.value) {
@@ -128,7 +133,8 @@ fun NavegateButtonByTown(
             text = "Navegar",
             fontSize = 14.sp,
             fontFamily = poppins,
-            fontWeight = FontWeight.Normal
+            fontWeight = FontWeight.Normal,
+            color = Color.Black
         )
     }
 }
@@ -152,27 +158,31 @@ fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
                 text = "Poblacion: ",
                 fontFamily = poppins,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Text(
                 text = gasStation.localidad,
                 fontFamily = poppins,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
+                color = Color.Black
             )
         }
-        Row{
+        Row {
             Text(
                 text = "Provincia: ",
                 fontFamily = poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                color = Color.Black
             )
             Text(
                 text = gasStation.provincia,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Light,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                color = Color.Black
             )
         }
         Row() {
@@ -180,13 +190,15 @@ fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
                 text = "Horario: ",
                 fontFamily = poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                color = Color.Black
             )
             Text(
                 text = gasStation.horario,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Light,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                color = Color.Black
             )
         }
     }
@@ -197,8 +209,10 @@ fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
 
 @Composable
 fun GasStationTextByTown(
+    listViewModel: ListViewModel,
     gasStation: GasolineraPorMunicipio,
     isSelectedCard: MutableState<Boolean>,
+    isSelectedFav: MutableState<Boolean>,
 
     ) {
     Column(
@@ -217,15 +231,74 @@ fun GasStationTextByTown(
         Spacer(modifier = Modifier.height(2.dp))
         PriceGas(gasStation)
         TextoMas(isSelectedCard, Modifier.align(Alignment.End))
-
-
+        Spacer(modifier = Modifier.height(2.dp))
+        FavButtonByTown(listViewModel, isSelectedFav, Modifier.align(Alignment.End), gasStation)
     }
 }
 
+
 @Composable
-fun TextoMas(isSelectedCard: MutableState<Boolean>, align: Modifier) {
+fun FavButtonByTown(
+    listViewModel: ListViewModel,
+    isSelectedFav: MutableState<Boolean>,
+    modifier: Modifier,
+    gasStation: GasolineraPorMunicipio
+) {
     Row(
-        align.clickable { isSelectedCard.value = !isSelectedCard.value },
+        modifier.clickable {
+            if (isSelectedFav.value) {
+                listViewModel.deleteFavorite(gasStation.iDEESS)
+            } else {
+                listViewModel.addFavorite(gasStation.iDEESS)
+            }
+            isSelectedFav.value = !isSelectedFav.value
+        },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (isSelectedFav.value) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_starfilled_24),
+                contentDescription = "",
+                tint = colorResource(
+                    id = R.color.Naranja
+                )
+            )
+
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = "Eliminar favoritos",
+                fontSize = 11.sp,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+
+        } else {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_starempty_24),
+                contentDescription = "",
+                tint = colorResource(
+                    id = R.color.Naranja
+                )
+            )
+
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = "Añadir a favoritos",
+                fontSize = 11.sp,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }
+    }
+
+}
+
+@Composable
+fun TextoMas(isSelectedCard: MutableState<Boolean>, modifier: Modifier) {
+    Row(
+        modifier.clickable { isSelectedCard.value = !isSelectedCard.value },
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(modifier = Modifier.size(25.dp, 25.dp),
@@ -239,10 +312,18 @@ fun TextoMas(isSelectedCard: MutableState<Boolean>, align: Modifier) {
 
         }
         Spacer(modifier = Modifier.size(8.dp))
-        if (isSelectedCard.value) Text(
-            text = "Menos Info...",
-            fontSize = 12.sp
-        ) else Text(text = "Mas Info...", fontSize = 12.sp)
+        if (isSelectedCard.value)
+            Text(
+                text = "Menos Info...",
+                fontSize = 11.sp, fontFamily = poppins, fontWeight = FontWeight.Medium
+            ) else
+            Text(
+                text = "Mas Info...",
+                fontSize = 11.sp,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
     }
 }
 
@@ -276,7 +357,8 @@ fun PrecioGLP(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGLP),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -302,7 +384,8 @@ fun PrecioGNC(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGNC),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -328,7 +411,8 @@ fun PrecioBiodiesel(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioBiodiesel),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -354,7 +438,8 @@ fun PrecioBioetanol(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioBioetanol),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -380,7 +465,8 @@ fun PrecioGasoleoB(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGasoleoB),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -406,7 +492,8 @@ fun PrecioGasolina95E10(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGasolina95E10),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -432,7 +519,8 @@ fun PrecioGasolina95E5Premium(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGasolina95E5Premium),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -458,7 +546,8 @@ fun PrecioGasolina98E10(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGasolina98E5),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -484,7 +573,8 @@ fun PrecioGasolina98E5(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGasolina98E10),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -510,7 +600,8 @@ fun PrecioGasolina95E5(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.GasolinaSinPlomo),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -536,7 +627,8 @@ fun PrecioGasoilPremium(gasStation: GasolineraPorMunicipio) {
         ) {
             Text(
                 text = stringResource(id = R.string.precioGasoleoPremium),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -560,7 +652,11 @@ fun PrecioGasoil(gasStation: GasolineraPorMunicipio) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = stringResource(id = R.string.Diesel), fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(id = R.string.Diesel),
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
                 text = gasStation.precioGasoleoA + " €",
@@ -578,14 +674,23 @@ fun PrecioGasoil(gasStation: GasolineraPorMunicipio) {
 @Composable
 fun GasStationAddress(gasStation: GasolineraPorMunicipio) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = gasStation.direccion, fontSize = 15.sp)
+        Text(
+            text = gasStation.direccion,
+            fontSize = 15.sp,
+            color = Color.Black
+        )
     }
 }
 
 @Composable
 fun GasStationTitle(gasStation: GasolineraPorMunicipio) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = gasStation.rotulo, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = gasStation.rotulo,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
     }
 }
 

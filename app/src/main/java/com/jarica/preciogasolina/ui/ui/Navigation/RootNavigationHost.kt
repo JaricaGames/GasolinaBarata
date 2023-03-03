@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.MainScreenUi
 import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
@@ -19,7 +20,8 @@ fun RootNavigationHost(
     searchViewModel: SearchViewModel,
     mapViewModel: MapViewModel,
     listViewModel: ListViewModel,
-    splashScreenViewModel: SplashScreenViewModel
+    splashScreenViewModel: SplashScreenViewModel,
+    favViewModel: FavViewModel
 ) {
     NavHost(
         navController = navController,
@@ -29,8 +31,8 @@ fun RootNavigationHost(
         composable(Destinations.SplashScreen.route) {
             SplashScreenUi(navController, splashScreenViewModel)
         }
-        composable(Destinations.MainScreenUi.route) {
-            MainScreenUi(searchViewModel, mapViewModel, listViewModel)
+        composable(Destinations.MainScreen.route) {
+            MainScreenUi(searchViewModel, mapViewModel, listViewModel, favViewModel)
         }
     }
 }

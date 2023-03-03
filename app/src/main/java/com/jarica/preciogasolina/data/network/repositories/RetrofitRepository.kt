@@ -1,13 +1,18 @@
-package com.jarica.preciogasolina.data.network
+package com.jarica.preciogasolina.data.network.repositories
 
-import com.jarica.preciogasolina.data.network.response.*
+import com.jarica.preciogasolina.data.network.Retrofit.MainService
+import com.jarica.preciogasolina.data.network.Retrofit.response.*
 import javax.inject.Inject
 
 
-class MainRepository @Inject constructor(private val api:MainService) {
+class RetrofitRepository @Inject constructor(private val api: MainService) {
 
     suspend fun getProvincias(): List<Province> {
         return api.getProvincias()
+    }
+
+    suspend fun getEESS(): MainResponse {
+        return api.getESS()
     }
 
     suspend fun getTownsbyProvince(ID:String): List<Towns>{

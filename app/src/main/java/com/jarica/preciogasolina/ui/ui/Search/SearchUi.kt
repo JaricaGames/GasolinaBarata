@@ -28,9 +28,9 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
-import com.jarica.preciogasolina.data.network.response.Gasolina
-import com.jarica.preciogasolina.data.network.response.Province
-import com.jarica.preciogasolina.data.network.response.Towns
+import com.jarica.preciogasolina.data.network.Retrofit.response.Gasolina
+import com.jarica.preciogasolina.data.network.Retrofit.response.Province
+import com.jarica.preciogasolina.data.network.Retrofit.response.Towns
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
@@ -203,7 +203,8 @@ fun EDTSeleccioneGasStation(
                     text = label.nombreProducto,
                     fontSize = 14.sp,
                     fontFamily = poppins,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
                 )
             }
 
@@ -273,7 +274,8 @@ fun EDTSeleccioneProvincia(
                     text = label.Provincia,
                     fontSize = 14.sp,
                     fontFamily = poppins,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
                 )
             }
 
@@ -323,7 +325,7 @@ fun SearchButton(
         enabled = isTownSelected,
         shape = RoundedCornerShape(10.dp),
     ) {
-        Text(text = stringResource(id = R.string.searchButtton), fontFamily = poppins)
+        Text(text = stringResource(id = R.string.searchButtton), fontFamily = poppins, color = Color.White)
     }
 }
 

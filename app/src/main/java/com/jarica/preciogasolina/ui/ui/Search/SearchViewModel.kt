@@ -4,16 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jarica.preciogasolina.data.network.response.Province
-import com.jarica.preciogasolina.data.network.MainRepository
-import com.jarica.preciogasolina.data.network.response.Gasolina
-import com.jarica.preciogasolina.data.network.response.Towns
+import com.jarica.preciogasolina.data.network.Retrofit.response.Province
+import com.jarica.preciogasolina.data.network.repositories.RetrofitRepository
+import com.jarica.preciogasolina.data.network.Retrofit.response.Gasolina
+import com.jarica.preciogasolina.data.network.Retrofit.response.MainResponse
+import com.jarica.preciogasolina.data.network.Retrofit.response.Towns
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val mainRepository: MainRepository) :
+class SearchViewModel @Inject constructor(private val retrofitRepository: RetrofitRepository) :
     ViewModel() {
 
     private val _gasolineSelected = MutableLiveData<String>()
@@ -60,14 +61,16 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
         var idMunicipioSeleccionado = ""
         var idGasolinaSeleccionada = ""
         var nameGasolinaSeleccionada = ""
+        var listadoGasolinera: MainResponse? = null
     }
 
     init {
         viewModelScope.launch {
             _isDataCharging.value = true
-            _provinceList.value = mainRepository.getProvincias()
-            _gasolineList.value = mainRepository.getGasolines()
+            _provinceList.value = retrofitRepository.getProvincias()
+            _gasolineList.value = retrofitRepository.getGasolines()
             _isDataCharging.value = false
+            listadoGasolinera = retrofitRepository.getEESS()
         }
     }
 
@@ -104,7 +107,7 @@ class SearchViewModel @Inject constructor(private val mainRepository: MainReposi
 
     private fun getTownsByProvince(idProvincia: String) {
         viewModelScope.launch {
-            _townsList.value = mainRepository.getTownsbyProvince(idProvincia)
+            _townsList.value = retrofitRepository.getTownsbyProvince(idProvincia)
         }
     }
 

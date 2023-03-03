@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +38,7 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
 
     if (idGasolinaSeleccionada == "") {
         if (gasList.isEmpty()) {
-            emptyGasStationList(navController)
+            EmptyGasStationList(navController)
         } else {
             Column(Modifier.fillMaxWidth()) {
                 LazyColumn(
@@ -45,7 +46,7 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
                     var contador = 0
                     items(gasList) { gasStation ->
                         contador ++
-                        cardStationByTowns(gasStation)
+                        cardStationByTowns(gasStation, listViewModel)
                         if(contador%5 == 0){
                             Spacer(modifier = Modifier.height(10.dp))
                             BannerAdView()
@@ -60,7 +61,7 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
         }
     } else {
         if (gasListByGasAndTown.isEmpty()) {
-            emptyGasStationList(navController)
+            EmptyGasStationList(navController)
         } else {
 
         }
@@ -68,7 +69,7 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
             var contador = 0
             items(gasListByGasAndTown) { gasStation ->
                 contador ++
-                cardStationByGasolineAndTown(gasStation)
+                cardStationByGasolineAndTown(gasStation, listViewModel)
                 if(contador%5 == 0){
                     Spacer(modifier = Modifier.height(10.dp))
                     BannerAdView()
@@ -92,7 +93,7 @@ fun BannerAdView() {
             AdView(context).apply {
                 setAdSize(AdSize.FULL_BANNER)
                 // Add your adUnitID, this is for testing.
-                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                adUnitId = "ca-app-pub-4979320410432560/7752668839"
                 loadAd(AdRequest.Builder().build())
             }
         }
@@ -100,8 +101,9 @@ fun BannerAdView() {
 }
 
 
+
 @Composable
-fun emptyGasStationList(navController: NavHostController) {
+fun EmptyGasStationList(navController: NavHostController) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -116,13 +118,15 @@ fun emptyGasStationList(navController: NavHostController) {
         Text(
             text = stringResource(id = R.string.result0),
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(
             text = stringResource(id = R.string.result0_2),
             fontSize = 15.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
         Spacer(modifier = Modifier.size(32.dp))
         Button(modifier = Modifier

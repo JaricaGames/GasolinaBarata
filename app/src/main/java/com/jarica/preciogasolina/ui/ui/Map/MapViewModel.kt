@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.MapProperties
-import com.jarica.preciogasolina.data.network.response.GasolineraPorGasolinaYMunicipio
-import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
+import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorGasolinaYMunicipio
+import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

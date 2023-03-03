@@ -1,6 +1,6 @@
-package com.jarica.preciogasolina.data.network
+package com.jarica.preciogasolina.data.network.Retrofit
 
-import com.jarica.preciogasolina.data.network.response.*
+import com.jarica.preciogasolina.data.network.Retrofit.response.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -41,6 +41,14 @@ class MainService @Inject constructor(private val mainClient: MainClient) {
         return withContext(Dispatchers.IO) {
             val response = mainClient.getGasStationsByTownAndGasoline(idTown,idGasoline)
             response.body()!!.ListaEESSPrecio
+        }
+    }
+
+
+    suspend fun getESS(): MainResponse {
+        return withContext(Dispatchers.IO) {
+            val response = mainClient.getESS()
+            response
         }
     }
 

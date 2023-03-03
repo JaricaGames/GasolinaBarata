@@ -1,7 +1,7 @@
-package com.jarica.preciogasolina.data.network
+package com.jarica.preciogasolina.data.network.Retrofit
 
 
-import com.jarica.preciogasolina.data.network.response.*
+import com.jarica.preciogasolina.data.network.Retrofit.response.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -22,6 +22,9 @@ interface MainClient {
 
     @GET("EstacionesTerrestres/FiltroMunicipioProducto/{IDMUNICIPIO}/{IDPRODUCTO}")
     suspend fun getGasStationsByTownAndGasoline(@Path("IDMUNICIPIO") idTown: String, @Path("IDPRODUCTO") idGasoline: String  ) : Response<GasByGasolineAndTownResponse>
+
+    @GET("EstacionesTerrestres/")
+    suspend fun getESS(): MainResponse
 
 
 }

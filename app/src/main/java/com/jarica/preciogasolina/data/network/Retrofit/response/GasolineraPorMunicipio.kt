@@ -1,7 +1,9 @@
-package com.jarica.preciogasolina.data.network.response
+package com.jarica.preciogasolina.data.network.Retrofit.response
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class GasolineraPorMunicipio(
     @SerializedName("C.P.") var CP: String,
     @SerializedName("Dirección") var direccion: String,
