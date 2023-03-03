@@ -1,8 +1,6 @@
 package com.jarica.preciogasolina.ui.ui.Navigation
 
 import com.jarica.preciogasolina.R
-import com.jarica.preciogasolina.data.network.response.GasolineraPorGasolinaYMunicipio
-import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
 
 sealed class Destinations(
     val route: String,
@@ -34,16 +32,16 @@ sealed class Destinations(
         R.drawable.ic_search
     )
 
-    object MainScreenUi : Destinations(
+    object MainScreen : Destinations(
         "MainScreen",
         "MainScreen",
         R.drawable.ic_search
     )
 
-    object DetailScreenUi : Destinations(
-        "DetailScreen",
-        "DetailScreen",
-        R.drawable.ic_search
+    object FavScreen : Destinations(
+        "FavScreen",
+        "Favoritos",
+        R.drawable.ic_star
     )
 }
 

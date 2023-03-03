@@ -1,12 +1,11 @@
 package com.jarica.preciogasolina.ui.ui.Navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.navArgument
+import com.jarica.preciogasolina.ui.ui.FavScreen.FavUi
+import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListUi
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Map.MapUi
@@ -21,7 +20,8 @@ fun HomeNavigationHost(
     navController: NavHostController,
     searchViewModel: SearchViewModel,
     mapViewModel: MapViewModel,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
+    favViewModel: FavViewModel
 ){
     NavHost(navController = navController, startDestination = Destinations.SearchScreen.route){
         composable(Destinations.SearchScreen.route){
@@ -32,6 +32,9 @@ fun HomeNavigationHost(
         }
         composable(Destinations.ListScreen.route){
             ListUi(listViewModel, navController)
+        }
+        composable(Destinations.FavScreen.route){
+            FavUi(favViewModel, listViewModel)
         }
     }
 }

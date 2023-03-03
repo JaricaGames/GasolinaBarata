@@ -2,6 +2,7 @@ package com.jarica.preciogasolina.ui.ui.Map
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,9 +18,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import com.jarica.preciogasolina.data.network.response.GasolineraPorGasolinaYMunicipio
-import com.jarica.preciogasolina.data.network.response.GasolineraPorMunicipio
+import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorGasolinaYMunicipio
+import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
+import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.listadoGasolinera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,7 +66,6 @@ fun BannerAdView() {
         factory = { context ->
             AdView(context).apply {
                 setAdSize(AdSize.FULL_BANNER)
-                // Add your adUnitID, this is for testing.
                 adUnitId = "ca-app-pub-4979320410432560/7752668839"
                 loadAd(AdRequest.Builder().build())
             }
@@ -80,6 +81,7 @@ fun MyGoogleMap(
     mapProperties: MapProperties,
     cameraPositionState: CameraPositionState
 ) {
+
     GoogleMap(
         modifier = Modifier
             .fillMaxSize()

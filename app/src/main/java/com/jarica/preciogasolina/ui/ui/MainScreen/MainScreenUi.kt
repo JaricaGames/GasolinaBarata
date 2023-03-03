@@ -6,6 +6,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.jarica.preciogasolina.ui.ui.Components.BottomNavigationBar
+import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.*
@@ -17,7 +18,8 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 fun MainScreenUi(
     searchViewModel: SearchViewModel,
     mapViewModel: MapViewModel,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
+    favViewModel: FavViewModel
 ) {
 
     val navController2 = rememberNavController()
@@ -25,7 +27,8 @@ fun MainScreenUi(
     val navigationItems = listOf(
         Destinations.SearchScreen,
         Destinations.MapScreen,
-        Destinations.ListScreen
+        Destinations.ListScreen,
+        Destinations.FavScreen
     )
 
     Scaffold(
@@ -37,7 +40,8 @@ fun MainScreenUi(
             navController = navController2,
             searchViewModel,
             mapViewModel,
-            listViewModel
+            listViewModel,
+            favViewModel
         )
     }
 
