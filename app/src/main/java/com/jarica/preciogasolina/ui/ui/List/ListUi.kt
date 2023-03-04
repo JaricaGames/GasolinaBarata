@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +31,7 @@ import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavoriteUiState
-import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByGasolineAndTown
+import com.jarica.preciogasolina.ui.ui.List.Screens.CardStationByGasolineAndTown
 import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByTowns
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idGasolinaSeleccionada
@@ -98,21 +99,21 @@ fun ListUi(
         if (gasListByGasAndTown.isEmpty()) {
             EmptyGasStationList(navController)
         } else {
+            LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
+                var contador = 0
+                items(gasListByGasAndTown) { gasStation ->
+                    contador++
+                    CardStationByGasolineAndTown(gasStation, listViewModel, listFavId)
+                    if (contador % 5 == 0) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        BannerAdView()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
 
-        }
-        LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
-            var contador = 0
-            items(gasListByGasAndTown) { gasStation ->
-                contador++
-                cardStationByGasolineAndTown(gasStation, listViewModel, listFavId)
-                if (contador % 5 == 0) {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    BannerAdView()
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
-
             }
         }
+
 
     }
 
@@ -170,7 +171,8 @@ fun EmptyGasStationList(navController: NavHostController) {
             Text(
                 text = stringResource(id = R.string.Buttonresult0),
                 fontSize = 17.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.Naranja)
             )
 
         }
