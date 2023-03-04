@@ -50,7 +50,7 @@ fun SearchUi(
     val province: String by searchViewModel.provinceSelected.observeAsState(initial = "")
     val isProvinceExpanded: Boolean by searchViewModel.isProvinceExpanded.observeAsState(initial = false)
     val provinceList by searchViewModel.provincesList.observeAsState(listOf())
-    val isProviceSelected: Boolean by searchViewModel.isProvinceSelected.observeAsState(initial = false)
+    val isProvinceSelected: Boolean by searchViewModel.isProvinceSelected.observeAsState(initial = false)
 
     val town: String by searchViewModel.townSelected.observeAsState(initial = "")
     val isTownExpanded: Boolean by searchViewModel.isTownExpanded.observeAsState(initial = false)
@@ -73,7 +73,7 @@ fun SearchUi(
             Texto(stringResource(id = R.string.seleccioneCarburante))
             Spacer(modifier = Modifier.size(8.dp))
 
-            EDTSeleccioneGasStation(
+            EDTSelectGasStation(
                 gasoline,
                 isGasolineExpanded,
                 gasolineList,
@@ -83,10 +83,10 @@ fun SearchUi(
                 Spacer(modifier = Modifier.size(8.dp))
                 Texto(stringResource(R.string.seleccioneProvincia))
                 Spacer(modifier = Modifier.size(8.dp))
-                EDTSeleccioneProvincia(province, isProvinceExpanded, provinceList, searchViewModel)
+                EDTSelectProvince(province, isProvinceExpanded, provinceList, searchViewModel)
 
 
-                if (isProviceSelected && !isProvinceExpanded) {
+                if (isProvinceSelected && !isProvinceExpanded) {
                     Spacer(modifier = Modifier.size(8.dp))
                     Texto(stringResource(R.string.seleccioneMunicipio))
                     Spacer(modifier = Modifier.size(8.dp))
@@ -142,7 +142,7 @@ fun Texto(Texto: String) {
 }
 
 @Composable
-fun EDTSeleccioneGasStation(
+fun EDTSelectGasStation(
     gasoline: String,
     isGasolineExpanded: Boolean,
     gasolineList: List<Gasolina>,
@@ -204,7 +204,6 @@ fun EDTSeleccioneGasStation(
                     fontSize = 14.sp,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Normal,
-                    color = Color.Black
                 )
             }
 
@@ -214,7 +213,7 @@ fun EDTSeleccioneGasStation(
 }
 
 @Composable
-fun EDTSeleccioneProvincia(
+fun EDTSelectProvince(
     province: String,
     isProvinceExpanded: Boolean,
     ProvinceList: List<Province>,
@@ -275,7 +274,6 @@ fun EDTSeleccioneProvincia(
                     fontSize = 14.sp,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Normal,
-                    color = Color.Black
                 )
             }
 
@@ -325,7 +323,11 @@ fun SearchButton(
         enabled = isTownSelected,
         shape = RoundedCornerShape(10.dp),
     ) {
-        Text(text = stringResource(id = R.string.searchButtton), fontFamily = poppins, color = Color.White)
+        Text(
+            text = stringResource(id = R.string.searchButtton),
+            fontFamily = poppins,
+            color = Color.White
+        )
     }
 }
 
@@ -383,7 +385,8 @@ fun EDTSeleccioneMunicipio(
 
     ) {
         townsList.forEach { label ->
-            DropdownMenuItem(modifier = Modifier.height(25.dp),
+            DropdownMenuItem(
+                modifier = Modifier.height(25.dp),
                 onClick = {
                     searchViewModel.onTownSelected(
                         label.Municipio,
@@ -391,13 +394,14 @@ fun EDTSeleccioneMunicipio(
                         label.IDMunicipio
                     )
                     searchViewModel.onTownClicked(isTownExpanded)
+                },
 
-                }) {
+            ) {
                 Text(
                     text = label.Municipio,
                     fontSize = 14.sp,
                     fontFamily = poppins,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
                 )
             }
         }

@@ -3,16 +3,16 @@ package com.jarica.preciogasolina.ui.ui.SplashScreen
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.jarica.preciogasolina.data.network.repositories.RetrofitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 @HiltViewModel
-class SplashScreenViewModel @Inject constructor(private val retrofitRepository: RetrofitRepository) :
+class SplashScreenViewModel @Inject constructor() :
     ViewModel() {
 
     private val _progressIndicator = MutableLiveData<Float>()
@@ -29,7 +29,9 @@ class SplashScreenViewModel @Inject constructor(private val retrofitRepository: 
                 _progressIndicator.value = _progressIndicator.value?.plus(0.015f)
             }
 
-            Thread.sleep(50)
+            withContext(Dispatchers.IO) {
+                Thread.sleep(50)
+            }
 
 
         }

@@ -1,6 +1,5 @@
 package com.jarica.preciogasolina.ui.ui.SplashScreen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,11 +20,11 @@ import androidx.navigation.NavHostController
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 
 const val SPLASHSCREEN_DURATION = 4000L
 
-@SuppressLint("CoroutineCreationDuringComposition")
+
 @Composable
 fun SplashScreenUi(
     navController: NavHostController,

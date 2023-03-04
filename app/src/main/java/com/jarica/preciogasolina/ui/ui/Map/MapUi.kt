@@ -1,14 +1,11 @@
 package com.jarica.preciogasolina.ui.ui.Map
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.AdRequest
@@ -21,7 +18,6 @@ import com.google.maps.android.compose.*
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorGasolinaYMunicipio
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.listadoGasolinera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,11 +86,11 @@ fun MyGoogleMap(
         cameraPositionState = cameraPositionState,
     ) {
 
-        if (!gasolineList.isNullOrEmpty()) {
+        if (gasolineList.isNotEmpty()) {
             gasolineList.forEach { gasolinera ->
 
-                var longitud = mapViewModel.replaceString(gasolinera.longitud)
-                var latitud = mapViewModel.replaceString(gasolinera.latitud)
+                val longitud = mapViewModel.replaceString(gasolinera.longitud)
+                val latitud = mapViewModel.replaceString(gasolinera.latitud)
 
                 val bounds = mapViewModel.getBounds(latitud, longitud)
                 val position = LatLng(latitud, longitud)
@@ -109,12 +105,12 @@ fun MyGoogleMap(
             }
             mapViewModel.restartBounds()
         }
-        if (!gasolineListByGasAndTown.isNullOrEmpty()) {
+        if (gasolineListByGasAndTown.isNotEmpty()) {
 
 
             gasolineListByGasAndTown.forEach { gasolinera ->
-                var longitud = mapViewModel.replaceString(gasolinera.longitud)
-                var latitud = mapViewModel.replaceString(gasolinera.latitud)
+                val longitud = mapViewModel.replaceString(gasolinera.longitud)
+                val latitud = mapViewModel.replaceString(gasolinera.latitud)
 
                 val bounds = mapViewModel.getBounds(latitud, longitud)
                 val position = LatLng(latitud, longitud)

@@ -26,8 +26,6 @@ class ListViewModel @Inject constructor(
     private val _gasList = MutableLiveData<List<GasolineraPorMunicipio>>()
     val gasList: MutableLiveData<List<GasolineraPorMunicipio>> = _gasList
 
-    private val _idListFavorite = MutableLiveData<List<String>>()
-    val idListFavorite: MutableLiveData<List<String>> = _idListFavorite
 
     private val _gasListByGasAndTown = MutableLiveData<List<GasolineraPorGasolinaYMunicipio>>()
     val gasListByGasAndTown: MutableLiveData<List<GasolineraPorGasolinaYMunicipio>> = _gasListByGasAndTown
@@ -63,10 +61,6 @@ class ListViewModel @Inject constructor(
             deleteFavoriteUseCase(FavoriteModel(id = iDEESS))
         }
 
-    }
-
-    fun getIdLisFavorite(idList : MutableList<String>) {
-        _idListFavorite.value = idList
     }
 
 }

@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     //INICIAMOS EL CONTROLADOR DE LA RAIZ QUE INICIA LA SPLASHSCREEN Y TRAS 4 SEGUNDOS INICIA LA MAINSCREEN
-                    var navController = rememberNavController()
+                    val navController = rememberNavController()
                     RootNavigationHost(
                         navController = navController,
                         searchViewModel = searchViewModel,

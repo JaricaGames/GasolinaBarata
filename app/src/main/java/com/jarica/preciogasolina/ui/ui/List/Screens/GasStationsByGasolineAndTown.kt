@@ -37,14 +37,14 @@ import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.nameGasolinaSeleccionada
 
 @Composable
-fun cardStationByGasolineAndTown(
+fun CardStationByGasolineAndTown(
     gasStation: GasolineraPorGasolinaYMunicipio,
     listViewModel: ListViewModel,
     listFavId: MutableList<String>
 ) {
 
-    var isSelectedCard = rememberSaveable { mutableStateOf(false) }
-    var context = LocalContext.current
+    val isSelectedCard = rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Card(
         elevation = 10.dp,
@@ -54,7 +54,7 @@ fun cardStationByGasolineAndTown(
         backgroundColor = colorResource(id = R.color.Beige),
 
         ) {
-        Column() {
+        Column {
 
             Row(Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 ImageLogoByGasolineAndTown(gasStation)
@@ -118,8 +118,8 @@ fun lanzarMapsByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio, con
 
     val gasStationPosition =
         LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
-    var latitud = gasStationPosition.latitude
-    var longitud = gasStationPosition.longitude
+    val latitud = gasStationPosition.latitude
+    val longitud = gasStationPosition.longitude
     val gmmIntentUri =
         Uri.parse("google.navigation:q=$latitud,$longitud")
     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -128,7 +128,7 @@ fun lanzarMapsByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio, con
 }
 
 fun replaceString(coordenada: String): Double {
-    var coordenadaOK = coordenada.replace(",", ".", false)
+    val coordenadaOK = coordenada.replace(",", ".", false)
     return coordenadaOK.toDouble()
 }
 
@@ -177,7 +177,7 @@ fun MasInfoCardByGasolineAndTown(
                 color = Color.Black
             )
         }
-        Row() {
+        Row {
             Text(
                 text = "Provincia: ",
                 fontFamily = poppins,
@@ -367,7 +367,7 @@ fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio) {
 
 @Composable
 fun GasStationAddressByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
-    Column() {
+    Column {
         Text(
             text = gasStation.direccion,
             fontSize = 12.sp,
