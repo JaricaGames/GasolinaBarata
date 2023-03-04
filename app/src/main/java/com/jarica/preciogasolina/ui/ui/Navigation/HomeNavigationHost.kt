@@ -31,7 +31,7 @@ fun HomeNavigationHost(
             MapUi(mapViewModel, listViewModel)
         }
         composable(Destinations.ListScreen.route){
-            ListUi(listViewModel, navController)
+            ListUi(listViewModel, navController, favViewModel)
         }
         composable(Destinations.FavScreen.route){
             FavUi(favViewModel, listViewModel)

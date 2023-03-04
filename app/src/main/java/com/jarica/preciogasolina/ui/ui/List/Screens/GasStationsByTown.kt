@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -36,20 +35,18 @@ import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun cardStationByTowns(
     gasStation: GasolineraPorMunicipio,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
+    listFavId: MutableList<String>
 ) {
 
+
     var isSelectedCard = rememberSaveable { mutableStateOf(false) }
-    var isSelectedFav = rememberSaveable { mutableStateOf(false) }
+
     var context = LocalContext.current
 
     Card(
@@ -57,9 +54,7 @@ fun cardStationByTowns(
         modifier =
         Modifier
             .padding(horizontal = 10.dp, vertical = 4.dp)
-            .fillMaxWidth()
-        //.animateContentSize(animationSpec = tween(200, 0, LinearEasing)),
-        , backgroundColor = colorResource(id = R.color.Beige)
+            .fillMaxWidth(), backgroundColor = colorResource(id = R.color.Beige)
     ) {
         Column() {
             Row(
@@ -68,7 +63,7 @@ fun cardStationByTowns(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ImageLogoByTown(gasStation, Modifier)
-                GasStationTextByTown(listViewModel, gasStation, isSelectedCard, isSelectedFav)
+                GasStationTextByTown(listViewModel, gasStation, isSelectedCard, listFavId)
 
             }
             if (isSelectedCard.value) {
@@ -212,9 +207,9 @@ fun GasStationTextByTown(
     listViewModel: ListViewModel,
     gasStation: GasolineraPorMunicipio,
     isSelectedCard: MutableState<Boolean>,
-    isSelectedFav: MutableState<Boolean>,
+    listFavId: MutableList<String>
 
-    ) {
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -232,7 +227,7 @@ fun GasStationTextByTown(
         PriceGas(gasStation)
         TextoMas(isSelectedCard, Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.height(2.dp))
-        FavButtonByTown(listViewModel, isSelectedFav, Modifier.align(Alignment.End), gasStation)
+        FavButtonByTown(listViewModel, Modifier.align(Alignment.End), gasStation, listFavId)
     }
 }
 
@@ -240,22 +235,24 @@ fun GasStationTextByTown(
 @Composable
 fun FavButtonByTown(
     listViewModel: ListViewModel,
-    isSelectedFav: MutableState<Boolean>,
     modifier: Modifier,
-    gasStation: GasolineraPorMunicipio
+    gasStation: GasolineraPorMunicipio,
+    listFavId: MutableList<String>
 ) {
+
+
     Row(
         modifier.clickable {
-            if (isSelectedFav.value) {
+            if (listFavId.contains(gasStation.iDEESS)) {
                 listViewModel.deleteFavorite(gasStation.iDEESS)
             } else {
                 listViewModel.addFavorite(gasStation.iDEESS)
             }
-            isSelectedFav.value = !isSelectedFav.value
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isSelectedFav.value) {
+        if (listFavId.contains(gasStation.iDEESS)
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_starfilled_24),
                 contentDescription = "",
@@ -297,6 +294,7 @@ fun FavButtonByTown(
 
 @Composable
 fun TextoMas(isSelectedCard: MutableState<Boolean>, modifier: Modifier) {
+
     Row(
         modifier.clickable { isSelectedCard.value = !isSelectedCard.value },
         verticalAlignment = Alignment.CenterVertically
@@ -330,21 +328,21 @@ fun TextoMas(isSelectedCard: MutableState<Boolean>, modifier: Modifier) {
 
 @Composable
 fun PriceGas(gasStation: GasolineraPorMunicipio) {
-    if (SearchViewModel.idGasolinaSeleccionada == "") {
-        PrecioGasoil(gasStation)
-        PrecioGasoilPremium(gasStation)
-        PrecioGasolina95E5(gasStation)
-        PrecioGasolina95E10(gasStation)
-        PrecioGasolina98E5(gasStation)
-        PrecioGasolina98E10(gasStation)
-        PrecioGasolina95E5Premium(gasStation)
-        PrecioGasoleoB(gasStation)
-        PrecioBioetanol(gasStation)
-        PrecioBiodiesel(gasStation)
-        PrecioGNC(gasStation)
-        PrecioGLP(gasStation)
 
-    }
+    PrecioGasoil(gasStation)
+    PrecioGasoilPremium(gasStation)
+    PrecioGasolina95E5(gasStation)
+    PrecioGasolina95E10(gasStation)
+    PrecioGasolina98E5(gasStation)
+    PrecioGasolina98E10(gasStation)
+    PrecioGasolina95E5Premium(gasStation)
+    PrecioGasoleoB(gasStation)
+    PrecioBioetanol(gasStation)
+    PrecioBiodiesel(gasStation)
+    PrecioGNC(gasStation)
+    PrecioGLP(gasStation)
+
+
 }
 
 @Composable
@@ -673,10 +671,18 @@ fun PrecioGasoil(gasStation: GasolineraPorMunicipio) {
 
 @Composable
 fun GasStationAddress(gasStation: GasolineraPorMunicipio) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
         Text(
             text = gasStation.direccion,
             fontSize = 15.sp,
+            color = Color.Black
+        )
+
+        Text(
+            text = gasStation.localidad,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = poppins,
             color = Color.Black
         )
     }
