@@ -10,20 +10,26 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
+import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
+import com.jarica.preciogasolina.ui.ui.FavScreen.FavoriteUiState
 import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByGasolineAndTown
 import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByTowns
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
@@ -31,10 +37,38 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idGasoli
 
 
 @Composable
-fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
+fun ListUi(
+    listViewModel: ListViewModel,
+    navController: NavHostController,
+    favViewModel: FavViewModel
+) {
 
     val gasList by listViewModel.gasList.observeAsState(listOf())
     val gasListByGasAndTown by listViewModel.gasListByGasAndTown.observeAsState(listOf())
+
+    val listFavId: MutableList<String> = mutableListOf()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val uiState by produceState<FavoriteUiState>(
+        initialValue = FavoriteUiState.Loading, key1 = lifecycle, key2 = favViewModel
+    ) {
+        lifecycle.repeatOnLifecycle(state = Lifecycle.State.CREATED) {
+            favViewModel.uiState.collect {
+                value = it
+            }
+        }
+    }
+
+    when (uiState) {
+        is FavoriteUiState.Error -> {}
+        FavoriteUiState.Loading -> {}
+        is FavoriteUiState.Success -> {
+            (uiState as FavoriteUiState.Success).favorites.forEach {
+                listFavId.add(it.id)
+            }
+        }
+
+    }
+
 
     if (idGasolinaSeleccionada == "") {
         if (gasList.isEmpty()) {
@@ -42,12 +76,13 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
         } else {
             Column(Modifier.fillMaxWidth()) {
                 LazyColumn(
-                    Modifier.padding(top = 6.dp, bottom = 65.dp)) {
+                    Modifier.padding(top = 6.dp, bottom = 65.dp)
+                ) {
                     var contador = 0
                     items(gasList) { gasStation ->
-                        contador ++
-                        cardStationByTowns(gasStation, listViewModel)
-                        if(contador%5 == 0){
+                        contador++
+                        cardStationByTowns(gasStation, listViewModel, listFavId)
+                        if (contador % 5 == 0) {
                             Spacer(modifier = Modifier.height(10.dp))
                             BannerAdView()
                             Spacer(modifier = Modifier.height(10.dp))
@@ -68,9 +103,9 @@ fun ListUi(listViewModel: ListViewModel, navController: NavHostController) {
         LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
             var contador = 0
             items(gasListByGasAndTown) { gasStation ->
-                contador ++
-                cardStationByGasolineAndTown(gasStation, listViewModel)
-                if(contador%5 == 0){
+                contador++
+                cardStationByGasolineAndTown(gasStation, listViewModel, listFavId)
+                if (contador % 5 == 0) {
                     Spacer(modifier = Modifier.height(10.dp))
                     BannerAdView()
                     Spacer(modifier = Modifier.height(10.dp))
@@ -99,7 +134,6 @@ fun BannerAdView() {
         }
     )
 }
-
 
 
 @Composable

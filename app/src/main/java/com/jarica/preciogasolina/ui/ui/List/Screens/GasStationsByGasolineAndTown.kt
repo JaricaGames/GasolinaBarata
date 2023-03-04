@@ -39,11 +39,11 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.nameGaso
 @Composable
 fun cardStationByGasolineAndTown(
     gasStation: GasolineraPorGasolinaYMunicipio,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
+    listFavId: MutableList<String>
 ) {
 
     var isSelectedCard = rememberSaveable { mutableStateOf(false) }
-    var isSelectedFav = rememberSaveable { mutableStateOf(false) }
     var context = LocalContext.current
 
     Card(
@@ -53,12 +53,17 @@ fun cardStationByGasolineAndTown(
             .fillMaxWidth(),
         backgroundColor = colorResource(id = R.color.Beige),
 
-    ) {
+        ) {
         Column() {
 
             Row(Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 ImageLogoByGasolineAndTown(gasStation)
-                GasStationTextByGasolineAndTown(gasStation, isSelectedCard, isSelectedFav)
+                GasStationTextByGasolineAndTown(
+                    gasStation,
+                    isSelectedCard,
+                    listViewModel,
+                    listFavId
+                )
             }
             if (isSelectedCard.value) {
                 MasInfoCardByGasolineAndTown(gasStation)
@@ -152,7 +157,9 @@ fun GoogleMapCardInfoByGasolineAndTown(
 }
 
 @Composable
-fun MasInfoCardByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
+fun MasInfoCardByGasolineAndTown(
+    gasStation: GasolineraPorGasolinaYMunicipio
+) {
     Column(Modifier.padding(horizontal = 16.dp)) {
         Row {
             Text(
@@ -239,7 +246,8 @@ fun TextoMasByGasolineAndTown(isSelectedCard: MutableState<Boolean>, modifier: M
 fun GasStationTextByGasolineAndTown(
     gasStation: GasolineraPorGasolinaYMunicipio,
     isSelectedCard: MutableState<Boolean>,
-    isSelectedFav: MutableState<Boolean>
+    listViewModel: ListViewModel,
+    listFavId: MutableList<String>,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -256,23 +264,35 @@ fun GasStationTextByGasolineAndTown(
         PriceGasByGasolineAndTown(gasStation)
         TextoMasByGasolineAndTown(isSelectedCard, Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.height(2.dp))
-        FavButtonByGasolineAndTown(isSelectedFav, Modifier.align(Alignment.End))  //Metodo esta en GasStationByTown
+        FavButtonByGasolineAndTown(
+            Modifier.align(Alignment.End),
+            listViewModel,
+            gasStation,
+            listFavId
+        )
 
     }
 }
 
 @Composable
 fun FavButtonByGasolineAndTown(
-    isSelectedFav: MutableState<Boolean>,
-    modifier: Modifier
+    modifier: Modifier,
+    listViewModel: ListViewModel,
+    gasStation: GasolineraPorGasolinaYMunicipio,
+    listFavId: MutableList<String>,
 ) {
     Row(
         modifier.clickable {
-            isSelectedFav.value = !isSelectedFav.value
+            if (listFavId.contains(gasStation.iDEESS)) {
+                listViewModel.deleteFavorite(gasStation.iDEESS)
+            } else {
+                listViewModel.addFavorite(gasStation.iDEESS)
+            }
+
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isSelectedFav.value) {
+        if (listFavId.contains(gasStation.iDEESS)) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_starfilled_24),
                 contentDescription = "",
@@ -347,9 +367,21 @@ fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio) {
 
 @Composable
 fun GasStationAddressByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = gasStation.direccion, fontSize = 12.sp, fontFamily = poppins,
-            color = Color.Black)
+    Column() {
+        Text(
+            text = gasStation.direccion,
+            fontSize = 12.sp,
+            fontFamily = poppins,
+            color = Color.Black
+        )
+        Spacer(modifier = Modifier.size(4.dp))
+        Text(
+            text = gasStation.localidad,
+            fontSize = 14.sp,
+            fontFamily = poppins,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
     }
 }
 
