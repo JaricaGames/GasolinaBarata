@@ -2,6 +2,7 @@ package com.jarica.preciogasolina.ui.ui.List
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,9 +40,7 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idGasoli
 
 @Composable
 fun ListUi(
-    listViewModel: ListViewModel,
-    navController: NavHostController,
-    favViewModel: FavViewModel
+    listViewModel: ListViewModel, navController: NavHostController, favViewModel: FavViewModel
 ) {
 
     val gasList by listViewModel.gasList.observeAsState(listOf())
@@ -76,21 +75,15 @@ fun ListUi(
             EmptyGasStationList(navController)
         } else {
             Column(Modifier.fillMaxWidth()) {
+                BannerAdView()
                 LazyColumn(
                     Modifier.padding(top = 6.dp, bottom = 65.dp)
                 ) {
-                    var contador = 0
+
                     items(gasList) { gasStation ->
-                        contador++
                         cardStationByTowns(gasStation, listViewModel, listFavId)
-                        if (contador % 5 == 0) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            BannerAdView()
-                            Spacer(modifier = Modifier.height(10.dp))
-                        }
                     }
                 }
-                BannerAdView()
             }
 
 
@@ -100,16 +93,8 @@ fun ListUi(
             EmptyGasStationList(navController)
         } else {
             LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
-                var contador = 0
                 items(gasListByGasAndTown) { gasStation ->
-                    contador++
                     CardStationByGasolineAndTown(gasStation, listViewModel, listFavId)
-                    if (contador % 5 == 0) {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        BannerAdView()
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-
                 }
             }
         }
@@ -122,18 +107,14 @@ fun ListUi(
 @SuppressLint("MissingPermission")
 @Composable
 fun BannerAdView() {
-    AndroidView(
-        modifier = Modifier
-            .fillMaxWidth(),
-        factory = { context ->
-            AdView(context).apply {
-                setAdSize(AdSize.FULL_BANNER)
-                // Add your adUnitID, this is for testing.
-                adUnitId = "ca-app-pub-4979320410432560/7752668839"
-                loadAd(AdRequest.Builder().build())
-            }
+    AndroidView(modifier = Modifier.fillMaxWidth(), factory = { context ->
+        AdView(context).apply {
+            setAdSize(AdSize.BANNER)
+            // Add your adUnitID, this is for testing.
+            adUnitId = "ca-app-pub-4979320410432560/7752668839"
+            loadAd(AdRequest.Builder().build())
         }
-    )
+    })
 }
 
 
@@ -145,6 +126,7 @@ fun EmptyGasStationList(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        BannerAdView()
         Image(
             painter = painterResource(id = R.drawable.ic_undrawsearching),
             contentDescription = "default"
@@ -172,7 +154,7 @@ fun EmptyGasStationList(navController: NavHostController) {
                 text = stringResource(id = R.string.Buttonresult0),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.Naranja)
+                color = Color.White
             )
 
         }

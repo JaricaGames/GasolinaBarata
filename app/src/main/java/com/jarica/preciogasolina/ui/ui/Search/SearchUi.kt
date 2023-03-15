@@ -31,6 +31,7 @@ import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.Retrofit.response.Gasolina
 import com.jarica.preciogasolina.data.network.Retrofit.response.Province
 import com.jarica.preciogasolina.data.network.Retrofit.response.Towns
+import com.jarica.preciogasolina.ui.theme.Typography
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
@@ -150,7 +151,11 @@ fun EDTSelectGasStation(
 ) {
     TextField(
         value = gasoline,
-        textStyle = TextStyle(fontFamily = poppins, fontSize = 14.sp),
+        textStyle = TextStyle(
+            fontFamily = poppins,
+            fontSize = 16.sp,
+            color = Color.Gray
+        ),
         onValueChange = { },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = colorResource(id = R.color.GrisClaro),
@@ -190,19 +195,20 @@ fun EDTSelectGasStation(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .height(500.dp)
+            .height(450.dp)
 
     ) {
         gasolineList.forEach { label ->
-            DropdownMenuItem(modifier = Modifier.height(25.dp),
+            DropdownMenuItem(modifier = Modifier.height(30.dp),
                 onClick = {
                     searchViewModel.onGasolineSelected(label.iDProducto, label.nombreProducto)
                     searchViewModel.isGasolineSelected(isGasolineExpanded)
                 }) {
                 Text(
                     text = label.nombreProducto,
+                    style = Typography.body1,
                     fontSize = 14.sp,
-                    fontFamily = poppins,
+                    //fontFamily = poppins,
                     fontWeight = FontWeight.Normal,
                 )
             }
@@ -221,6 +227,11 @@ fun EDTSelectProvince(
 ) {
     OutlinedTextField(
         value = province,
+        textStyle = TextStyle(
+            fontFamily = poppins,
+            fontSize = 16.sp,
+            color = Color.Gray
+        ),
         onValueChange = { searchViewModel.onProvinceSelectedChanged(province) },
         modifier = Modifier
             .clickable {
@@ -260,11 +271,11 @@ fun EDTSelectProvince(
         modifier = Modifier
             .fillMaxWidth()
             .padding(2.dp)
-            .height(500.dp)
+            .height(450.dp)
 
     ) {
         ProvinceList.forEach { label ->
-            DropdownMenuItem(modifier = Modifier.height(25.dp),
+            DropdownMenuItem(modifier = Modifier.height(30.dp),
                 onClick = {
                     searchViewModel.onProvinceSelected(label.Provincia, label.IDProvincia)
                     searchViewModel.isProvinceSelected(isProvinceExpanded)
@@ -343,6 +354,11 @@ fun EDTSeleccioneMunicipio(
     OutlinedTextField(
         value = town,
         onValueChange = { },
+        textStyle = TextStyle(
+            fontFamily = poppins,
+            fontSize = 16.sp,
+            color = Color.Gray
+        ),
         modifier = Modifier
             .clickable {
                 searchViewModel.onTownClicked(isTownExpanded)
@@ -381,12 +397,12 @@ fun EDTSeleccioneMunicipio(
         modifier = Modifier
             .fillMaxWidth()
             .padding(0.dp)
-            .height(500.dp)
+            .height(450.dp)
 
     ) {
         townsList.forEach { label ->
             DropdownMenuItem(
-                modifier = Modifier.height(25.dp),
+                modifier = Modifier.height(30.dp),
                 onClick = {
                     searchViewModel.onTownSelected(
                         label.Municipio,
@@ -396,7 +412,7 @@ fun EDTSeleccioneMunicipio(
                     searchViewModel.onTownClicked(isTownExpanded)
                 },
 
-            ) {
+                ) {
                 Text(
                     text = label.Municipio,
                     fontSize = 14.sp,

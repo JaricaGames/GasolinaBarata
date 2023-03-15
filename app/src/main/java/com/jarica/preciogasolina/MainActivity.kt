@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
 import com.jarica.preciogasolina.ui.theme.PrecioGasolinaTheme
@@ -20,8 +19,6 @@ import com.jarica.preciogasolina.ui.ui.Navigation.RootNavigationHost
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
@@ -37,9 +34,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         MobileAds.initialize(this)
-        lifecycleScope.launch(Dispatchers.IO){
-        }
-
 
         super.onCreate(savedInstanceState)
         setContent {
