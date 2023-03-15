@@ -101,6 +101,7 @@ fun NavegateButtonByGasolineAndTown(
         onClick = { lanzarMapsByGasolineAndTown(gasStation, context) }) {
         Icon(
             imageVector = Icons.Filled.Place,
+            tint = Color.White,
             contentDescription = "",
             modifier = Modifier.padding(end = 8.dp)
         )
@@ -109,15 +110,14 @@ fun NavegateButtonByGasolineAndTown(
             fontSize = 14.sp,
             fontFamily = poppins,
             fontWeight = FontWeight.Normal,
-            color = Color.Black
+            color = Color.White
         )
     }
 }
 
 fun lanzarMapsByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio, context: Context) {
 
-    val gasStationPosition =
-        LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
+    val gasStationPosition = LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
     val latitud = gasStationPosition.latitude
     val longitud = gasStationPosition.longitude
     val gmmIntentUri =
@@ -163,7 +163,7 @@ fun MasInfoCardByGasolineAndTown(
     Column(Modifier.padding(horizontal = 16.dp)) {
         Row {
             Text(
-                text = "Poblacion: ",
+                text = "Población: ",
                 fontFamily = poppins,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -349,7 +349,9 @@ fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio) {
         Text(
             text = "$nameGasolinaSeleccionada: ",
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = colorResource(
+                id = R.color.Negro
+            )
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(
@@ -389,11 +391,11 @@ fun GasStationAddressByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicip
 fun GasStationTitleByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
+            color = Color.Black,
             text = gasStation.rotulo,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = poppins,
-            color = Color.Black
         )
     }
 }

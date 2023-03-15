@@ -26,12 +26,13 @@ class SplashScreenViewModel @Inject constructor() :
     fun progressIndicator() {
         CoroutineScope(Dispatchers.Main).launch {
             if (_progressIndicator.value!! < 1f) {
-                _progressIndicator.value = _progressIndicator.value?.plus(0.015f)
+                _progressIndicator.value = _progressIndicator.value?.plus(0.005f)
             }
 
             withContext(Dispatchers.IO) {
                 Thread.sleep(50)
             }
+
 
 
         }

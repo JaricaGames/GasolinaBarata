@@ -122,6 +122,7 @@ fun NavegateButtonByTown(
         Icon(
             imageVector = Icons.Filled.Place,
             contentDescription = "",
+            tint = Color.White,
             modifier = Modifier.padding(end = 8.dp)
         )
         Text(
@@ -129,15 +130,16 @@ fun NavegateButtonByTown(
             fontSize = 14.sp,
             fontFamily = poppins,
             fontWeight = FontWeight.Normal,
-            color = Color.Black
+            color = Color.White
         )
     }
 }
 
 fun lanzarMapsByTown(gasStation: GasolineraPorMunicipio, context: Context) {
 
-    var latitud = gasStation.latitud
-    var longitud = gasStation.longitud
+    val gasStationPosition = LatLng(replaceString(gasStation.latitud), replaceString(gasStation.longitud))
+    val latitud = gasStationPosition.latitude
+    val longitud = gasStationPosition.longitude
     val gmmIntentUri =
         Uri.parse("google.navigation:q=$latitud,$longitud")
     val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -150,7 +152,7 @@ fun MasInfoCard(gasStation: GasolineraPorMunicipio) {
     Column(Modifier.padding(horizontal = 16.dp)) {
         Row {
             Text(
-                text = "Poblacion: ",
+                text = "Población: ",
                 fontFamily = poppins,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,

@@ -5,4 +5,4 @@ import dagger.hilt.android.HiltAndroidApp
 
 //CLASE PARA DAGGER HILT
 @HiltAndroidApp
-class PrecioGasolinaApp : Application()
+class precioGasolinaApp : Application()

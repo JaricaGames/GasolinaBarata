@@ -27,11 +27,15 @@ class FavViewModel @Inject constructor(
 
 
     fun lookForGasStationFavoriteCard(idGasStationFav: String): GasolineraPorMunicipio? {
-        val gasStation: GasolineraPorMunicipio? = SearchViewModel.listadoGasolinera!!.ListaEESSPrecio.find {
-            it.iDEESS == idGasStationFav
-        }
+        if (SearchViewModel.listadoGasolinera != null) {
+            val gasStation: GasolineraPorMunicipio? = SearchViewModel.listadoGasolinera!!.ListaEESSPrecio.find {
+                it.iDEESS == idGasStationFav
+            }
+            return gasStation
 
-        return gasStation
+        }else{
+            return null
+        }
 
     }
 }

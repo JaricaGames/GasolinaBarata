@@ -6,7 +6,7 @@
     <string name="searchButtton">Buscar</string>
 
     Oresultado
-    <string name="result0">Uppps, no hemos encontrado ningun resultado</string>
+    <string name="result0">Uppps, no hemos encontrado ningun resultado,</string>
     <string name="result0_2">pruebe con otros filtros</string>
     <string name="Buttonresult0">Modificar Filtros</string>
 

@@ -10,10 +10,10 @@ val Teal200 = Color(0xFFFFFFFF)
 
 val Naranja = Color(0xFFFA6900)
 val Beige = Color(0xFFFFF6BD)
-val Beige2 = Color(0xFFFFF6BD)
+val Beige2 = Color(0xFFF5EAEA)
 val NaranjaClaro = Color(0xFFF38630)
-val AzulClaro = Color(0xFFD5E9E8)
-val Azul = Color(0xFF69D2E7)
+val GrisClaro = Color(0xFFAFAFAF)
+val Raro = Color(0xFF183A1D)
 
 
 
