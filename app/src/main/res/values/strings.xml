@@ -11,7 +11,7 @@
     <string name="Buttonresult0">Modificar Filtros</string>
 
     Tipos de gasolina
-    <string name="Diesel">Diesel:  </string>
+    <string name="Diesel">Gasoleo A habitual :  </string>
     <string name="GasolinaSinPlomo">Gasolina 95 E5:  </string>
     <string name="precioGasolina95E10">Gasolina 95 E10:  </string>
     <string name="precioGasoleoPremium">Diesel Premium:  </string>

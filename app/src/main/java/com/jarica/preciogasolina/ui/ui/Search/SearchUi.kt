@@ -35,6 +35,9 @@ import com.jarica.preciogasolina.ui.theme.Typography
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -105,7 +108,13 @@ fun SearchUi(
                     Spacer(modifier = Modifier.size(16.dp))
                     BannerAdView()
                     Spacer(modifier = Modifier.size(16.dp))
-                    SearchButton(navController, listViewModel, gasoline, isTownSelected)
+                    SearchButton(
+                        navController,
+                        listViewModel,
+                        gasoline,
+                        isTownSelected,
+                        searchViewModel
+                    )
                 }
 
             }
@@ -191,7 +200,10 @@ fun EDTSelectGasStation(
         expanded = isGasolineExpanded,
         onDismissRequest = {
             searchViewModel.onGasolineClicked(isGasolineExpanded)
-            searchViewModel.onDismissGasoline()
+            CoroutineScope(Dispatchers.IO).launch {
+                searchViewModel.onDismissGasoline()
+            }
+
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +213,9 @@ fun EDTSelectGasStation(
         gasolineList.forEach { label ->
             DropdownMenuItem(modifier = Modifier.height(30.dp),
                 onClick = {
+
                     searchViewModel.onGasolineSelected(label.iDProducto, label.nombreProducto)
+
                     searchViewModel.isGasolineSelected(isGasolineExpanded)
                 }) {
                 Text(
@@ -277,7 +291,9 @@ fun EDTSelectProvince(
         ProvinceList.forEach { label ->
             DropdownMenuItem(modifier = Modifier.height(30.dp),
                 onClick = {
+
                     searchViewModel.onProvinceSelected(label.Provincia, label.IDProvincia)
+
                     searchViewModel.isProvinceSelected(isProvinceExpanded)
                 }) {
                 Text(
@@ -315,17 +331,20 @@ fun SearchButton(
     navController: NavHostController,
     listViewModel: ListViewModel,
     gasoline: String,
-    isTownSelected: Boolean
+    isTownSelected: Boolean,
+    searchViewModel: SearchViewModel
 ) {
     Button(
         onClick = {
             if (gasoline.isEmpty()) {
-                navController.navigate(Destinations.ListScreen.route)
                 listViewModel.getGasStationsByTowns()
-            } else {
                 navController.navigate(Destinations.ListScreen.route)
+
+            } else {
                 listViewModel.getGasStationsByTownsAndGasoline()
+                navController.navigate(Destinations.ListScreen.route)
             }
+
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -393,6 +412,7 @@ fun EDTSeleccioneMunicipio(
         onDismissRequest = {
             searchViewModel.onTownClicked(isTownExpanded)
             searchViewModel.onDismissTown()
+
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -404,11 +424,13 @@ fun EDTSeleccioneMunicipio(
             DropdownMenuItem(
                 modifier = Modifier.height(30.dp),
                 onClick = {
+
                     searchViewModel.onTownSelected(
                         label.Municipio,
                         isTownSelected,
                         label.IDMunicipio
                     )
+
                     searchViewModel.onTownClicked(isTownExpanded)
                 },
 

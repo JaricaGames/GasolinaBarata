@@ -49,10 +49,13 @@ fun FavUi(favViewModel: FavViewModel, listViewModel: ListViewModel) {
             }
 
             if (listFavId.isNotEmpty()) {
-                BannerAdView()
-                Box(modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center) {
 
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    BannerAdView()
                     LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
                         items(1) {
                             favViewModel.ReturnListFavId(listFavId)
@@ -74,8 +77,10 @@ fun FavUi(favViewModel: FavViewModel, listViewModel: ListViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BannerAdView()
-                    Box(modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
 
                         Text(
                             text = "Actualmente no tienes ningún favorito",
@@ -102,7 +107,7 @@ fun BannerAdView() {
         AdView(context).apply {
             setAdSize(AdSize.BANNER)
             // Add your adUnitID, this is for testing.
-            adUnitId = "ca-app-pub-4979320410432560/7752668839"
+            adUnitId = "ca-app-pub-4979320410432560/8638843620"
             loadAd(AdRequest.Builder().build())
         }
     })

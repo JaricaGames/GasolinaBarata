@@ -358,7 +358,8 @@ fun PrecioGLP(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGLP),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -385,7 +386,8 @@ fun PrecioGNC(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGNC),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -412,7 +414,8 @@ fun PrecioBiodiesel(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioBiodiesel),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -439,7 +442,8 @@ fun PrecioBioetanol(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioBioetanol),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -466,7 +470,8 @@ fun PrecioGasoleoB(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGasoleoB),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -493,7 +498,8 @@ fun PrecioGasolina95E10(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGasolina95E10),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -520,7 +526,8 @@ fun PrecioGasolina95E5Premium(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGasolina95E5Premium),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -547,7 +554,8 @@ fun PrecioGasolina98E10(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGasolina98E5),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -574,7 +582,8 @@ fun PrecioGasolina98E5(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGasolina98E10),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -601,7 +610,8 @@ fun PrecioGasolina95E5(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.GasolinaSinPlomo),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -628,7 +638,8 @@ fun PrecioGasoilPremium(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.precioGasoleoPremium),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
@@ -655,7 +666,8 @@ fun PrecioGasoil(gasStation: GasolineraPorMunicipio) {
             Text(
                 text = stringResource(id = R.string.Diesel),
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                fontSize = 14.sp,
             )
             Spacer(modifier = Modifier.size(3.dp))
             Text(
