@@ -2,17 +2,18 @@ package com.jarica.preciogasolina.ui.ui.FavScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jarica.preciogasolina.core.SearchSelectionState
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.domain.GetFavoritesUseCase
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavoriteUiState.Success
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class FavViewModel @Inject constructor(
-    getFavoritesUseCase: GetFavoritesUseCase
+    getFavoritesUseCase: GetFavoritesUseCase,
+    private val selectionState: SearchSelectionState
 ) : ViewModel() {
 
     var listFavIdAux: MutableList<String>? = null
@@ -27,13 +28,12 @@ class FavViewModel @Inject constructor(
 
 
     fun lookForGasStationFavoriteCard(idGasStationFav: String): GasolineraPorMunicipio? {
-        if (SearchViewModel.listadoGasolinera != null) {
-            val gasStation: GasolineraPorMunicipio? = SearchViewModel.listadoGasolinera!!.ListaEESSPrecio.find {
+        val stationList = selectionState.stationList
+        if (stationList != null) {
+            return stationList.ListaEESSPrecio.find {
                 it.iDEESS == idGasStationFav
             }
-            return gasStation
-
-        }else{
+        } else {
             return null
         }
 

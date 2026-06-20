@@ -2,7 +2,6 @@ package com.jarica.preciogasolina.ui.ui.List
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +33,6 @@ import com.jarica.preciogasolina.ui.ui.FavScreen.FavoriteUiState
 import com.jarica.preciogasolina.ui.ui.List.Screens.CardStationByGasolineAndTown
 import com.jarica.preciogasolina.ui.ui.List.Screens.cardStationByTowns
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idGasolinaSeleccionada
 
 
 @Composable
@@ -70,7 +67,7 @@ fun ListUi(
     }
 
 
-    if (idGasolinaSeleccionada == "") {
+    if (listViewModel.selectedGasolineId == "") {
         if (gasList.isEmpty()) {
             EmptyGasStationList(navController)
         } else {
@@ -92,9 +89,12 @@ fun ListUi(
         if (gasListByGasAndTown.isEmpty()) {
             EmptyGasStationList(navController)
         } else {
-            LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
-                items(gasListByGasAndTown) { gasStation ->
-                    CardStationByGasolineAndTown(gasStation, listViewModel, listFavId)
+            Column(Modifier.fillMaxWidth()) {
+                BannerAdView()
+                LazyColumn(Modifier.padding(top = 6.dp, bottom = 65.dp)) {
+                    items(gasListByGasAndTown) { gasStation ->
+                        CardStationByGasolineAndTown(gasStation, listViewModel, listFavId)
+                    }
                 }
             }
         }
@@ -111,7 +111,7 @@ fun BannerAdView() {
         AdView(context).apply {
             setAdSize(AdSize.BANNER)
             // Add your adUnitID, this is for testing.
-            adUnitId = "ca-app-pub-4979320410432560/7752668839"
+            adUnitId = "ca-app-pub-4979320410432560/2352636871"
             loadAd(AdRequest.Builder().build())
         }
     })

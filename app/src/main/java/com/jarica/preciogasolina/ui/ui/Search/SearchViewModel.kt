@@ -1,20 +1,27 @@
 package com.jarica.preciogasolina.ui.ui.Search
 
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jarica.preciogasolina.core.PreferencesManager
+import com.jarica.preciogasolina.core.SearchSelectionState
 import com.jarica.preciogasolina.data.network.Retrofit.response.Province
 import com.jarica.preciogasolina.data.network.repositories.RetrofitRepository
 import com.jarica.preciogasolina.data.network.Retrofit.response.Gasolina
-import com.jarica.preciogasolina.data.network.Retrofit.response.MainResponse
 import com.jarica.preciogasolina.data.network.Retrofit.response.Towns
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val retrofitRepository: RetrofitRepository) :
+class SearchViewModel @Inject constructor(
+    private val retrofitRepository: RetrofitRepository,
+    private val preferencesManager: PreferencesManager,
+    private val selectionState: SearchSelectionState
+) :
     ViewModel() {
 
     private val _gasolineSelected = MutableLiveData<String>()
@@ -27,7 +34,6 @@ class SearchViewModel @Inject constructor(private val retrofitRepository: Retrof
     val gasolineList: LiveData<List<Gasolina>> = _gasolineList
 
     private val _isGasolineSelected = MutableLiveData<Boolean>()
-
 
     private val _provinceSelected = MutableLiveData<String>()
     val provinceSelected: LiveData<String> = _provinceSelected
@@ -57,20 +63,14 @@ class SearchViewModel @Inject constructor(private val retrofitRepository: Retrof
     private val _isDataCharging = MutableLiveData<Boolean>()
     val isDataCharging: LiveData<Boolean> = _isDataCharging
 
-    companion object {
-        var idMunicipioSeleccionado = ""
-        var idGasolinaSeleccionada = ""
-        var nameGasolinaSeleccionada = ""
-        var listadoGasolinera: MainResponse? = null
-    }
-
     init {
         viewModelScope.launch {
             _isDataCharging.value = true
             _provinceList.value = retrofitRepository.getProvincias()
             _gasolineList.value = retrofitRepository.getGasolines()
             _isDataCharging.value = false
-            listadoGasolinera = retrofitRepository.getEESS()
+            selectionState.stationList = retrofitRepository.getEESS()
+
         }
     }
 
@@ -84,6 +84,7 @@ class SearchViewModel @Inject constructor(private val retrofitRepository: Retrof
 
     fun onProvinceSelected(label: String, idProvincia: String) {
         _provinceSelected.value = label
+        selectionState.provinceId = idProvincia
         _isProvinceSelected.value = true
         _townSelected.value = ""
         getTownsByProvince(idProvincia)
@@ -91,18 +92,21 @@ class SearchViewModel @Inject constructor(private val retrofitRepository: Retrof
 
     fun onTownClicked(townExpanded: Boolean) {
         _isTownExpanded.value = !townExpanded
+        getTownsByProvince(selectionState.provinceId)
     }
 
     fun onTownSelected(municipio: String, isTownSelected: Boolean, idMunicipio: String) {
         _townSelected.value = municipio
         if (!isTownSelected) _isTownSelected.value = !isTownSelected
-        idMunicipioSeleccionado = idMunicipio
+        selectionState.townId = idMunicipio
+
 
     }
 
     fun onDismissTown() {
         _townSelected.value = ""
         _isTownSelected.value = false
+
     }
 
     private fun getTownsByProvince(idProvincia: String) {
@@ -123,19 +127,24 @@ class SearchViewModel @Inject constructor(private val retrofitRepository: Retrof
     fun onGasolineSelected(iDProducto: String, nombreProducto: String) {
         _gasolineSelected.value = nombreProducto
         _isGasolineSelected.value = true
-        idGasolinaSeleccionada = iDProducto
-        nameGasolinaSeleccionada = nombreProducto
+        selectionState.gasolineId = iDProducto
+        selectionState.gasolineName = nombreProducto
     }
 
     fun onDismissGasoline() {
         _gasolineSelected.value = ""
-        idGasolinaSeleccionada = ""
-        nameGasolinaSeleccionada = ""
+        selectionState.gasolineId = ""
+        selectionState.gasolineName = ""
+
+
     }
 
     fun onDismissProvince() {
         _provinceSelected.value = ""
         _isProvinceSelected.value = false
+
     }
 
+
 }
+

@@ -34,7 +34,6 @@ import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorGasolinaYMunicipio
 import com.jarica.preciogasolina.ui.theme.poppins
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.nameGasolinaSeleccionada
 
 @Composable
 fun CardStationByGasolineAndTown(
@@ -261,7 +260,7 @@ fun GasStationTextByGasolineAndTown(
                 .fillMaxWidth()
                 .background(colorResource(id = R.color.GrisClaro))
         )
-        PriceGasByGasolineAndTown(gasStation)
+        PriceGasByGasolineAndTown(gasStation, listViewModel.selectedGasolineName)
         TextoMasByGasolineAndTown(isSelectedCard, Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.height(2.dp))
         FavButtonByGasolineAndTown(
@@ -334,24 +333,25 @@ fun FavButtonByGasolineAndTown(
 
 
 @Composable
-fun PriceGasByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio) {
-    PrecioSeleccionado(gasStation)
+fun PriceGasByGasolineAndTown(gasStation: GasolineraPorGasolinaYMunicipio, gasolineName: String) {
+    PrecioSeleccionado(gasStation, gasolineName)
 
 }
 
 @Composable
-fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio) {
+fun PrecioSeleccionado(gasStation: GasolineraPorGasolinaYMunicipio, gasolineName: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "$nameGasolinaSeleccionada: ",
+            text = "$gasolineName: ",
             fontWeight = FontWeight.Bold,
             color = colorResource(
                 id = R.color.Negro
-            )
+            ),
+            fontSize = 14.sp,
         )
         Spacer(modifier = Modifier.size(8.dp))
         Text(

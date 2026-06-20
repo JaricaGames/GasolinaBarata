@@ -4,12 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
+import com.jarica.preciogasolina.core.SearchSelectionState
 import com.jarica.preciogasolina.data.network.repositories.RetrofitRepository
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorGasolinaYMunicipio
 import com.jarica.preciogasolina.domain.AddFavoriteUseCase
 import com.jarica.preciogasolina.domain.DeleteFavoriteUseCase
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idGasolinaSeleccionada
-import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel.Companion.idMunicipioSeleccionado
 import com.jarica.preciogasolina.ui.ui.model.FavoriteModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,6 +19,7 @@ class ListViewModel @Inject constructor(
     private val retrofitRepository: RetrofitRepository,
     private val addFavoriteUseCase: AddFavoriteUseCase,
     private val deleteFavoriteUseCase: DeleteFavoriteUseCase,
+    private val selectionState: SearchSelectionState,
 ) : ViewModel() {
 
 
@@ -30,10 +30,14 @@ class ListViewModel @Inject constructor(
     private val _gasListByGasAndTown = MutableLiveData<List<GasolineraPorGasolinaYMunicipio>>()
     val gasListByGasAndTown: MutableLiveData<List<GasolineraPorGasolinaYMunicipio>> = _gasListByGasAndTown
 
+    // Expuesto para la UI (ListUi / CardStationByGasolineAndTown) en lugar del antiguo estado estático.
+    val selectedGasolineId: String get() = selectionState.gasolineId
+    val selectedGasolineName: String get() = selectionState.gasolineName
+
 
     fun getGasStationsByTowns() {
         viewModelScope.launch {
-            _gasList.value = retrofitRepository.getGasStationsByTowns(ID = idMunicipioSeleccionado)
+            _gasList.value = retrofitRepository.getGasStationsByTowns(ID = selectionState.townId)
         }
 
     }
@@ -42,8 +46,8 @@ class ListViewModel @Inject constructor(
         viewModelScope.launch {
             _gasListByGasAndTown.value =
                 retrofitRepository.getGasStationsByTownsAndGasoline(
-                    IDTown = idMunicipioSeleccionado,
-                    IDGasoline = idGasolinaSeleccionada
+                    IDTown = selectionState.townId,
+                    IDGasoline = selectionState.gasolineId
                 )
 
 
