@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jarica.preciogasolina.core.PreferencesManager
+import com.jarica.preciogasolina.core.RecentSearch
 import com.jarica.preciogasolina.core.SearchSelectionState
 import com.jarica.preciogasolina.data.network.Retrofit.response.Province
 import com.jarica.preciogasolina.data.network.repositories.RetrofitRepository
@@ -63,6 +64,9 @@ class SearchViewModel @Inject constructor(
     private val _isDataCharging = MutableLiveData<Boolean>()
     val isDataCharging: LiveData<Boolean> = _isDataCharging
 
+    private val _recentSearches = MutableLiveData<List<RecentSearch>>()
+    val recentSearches: LiveData<List<RecentSearch>> = _recentSearches
+
     init {
         viewModelScope.launch {
             _isDataCharging.value = true
@@ -71,6 +75,46 @@ class SearchViewModel @Inject constructor(
             _isDataCharging.value = false
             selectionState.stationList = retrofitRepository.getEESS()
 
+        }
+        viewModelScope.launch {
+            preferencesManager.loadRecentSearches().collect {
+                _recentSearches.value = it
+            }
+        }
+    }
+
+    //GUARDA LA BUSQUEDA ACTUAL COMO RECIENTE, SE LLAMA AL PULSAR BUSCAR
+    fun onSearchLaunched() {
+        val town = _townSelected.value ?: return
+        if (town.isEmpty()) return
+        val search = RecentSearch(
+            gasolineId = selectionState.gasolineId,
+            gasolineName = selectionState.gasolineName,
+            provinceId = selectionState.provinceId,
+            provinceName = _provinceSelected.value ?: "",
+            townId = selectionState.townId,
+            townName = town
+        )
+        viewModelScope.launch {
+            preferencesManager.saveRecentSearch(search)
+        }
+    }
+
+    //RESTAURA LA SELECCION DE UNA BUSQUEDA RECIENTE ANTES DE LANZARLA
+    fun onRecentSearchClicked(search: RecentSearch) {
+        selectionState.provinceId = search.provinceId
+        selectionState.townId = search.townId
+        selectionState.gasolineId = search.gasolineId
+        selectionState.gasolineName = search.gasolineName
+        _gasolineSelected.value = search.gasolineName
+        _provinceSelected.value = search.provinceName
+        _isProvinceSelected.value = true
+        _townSelected.value = search.townName
+        _isTownSelected.value = true
+        getTownsByProvince(search.provinceId)
+        viewModelScope.launch {
+            //LA VUELVE A GUARDAR PARA SUBIRLA A LA PRIMERA POSICION
+            preferencesManager.saveRecentSearch(search)
         }
     }
 

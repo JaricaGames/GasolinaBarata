@@ -5,16 +5,20 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -28,6 +32,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.jarica.preciogasolina.R
+import com.jarica.preciogasolina.core.RecentSearch
 import com.jarica.preciogasolina.data.network.Retrofit.response.Gasolina
 import com.jarica.preciogasolina.data.network.Retrofit.response.Province
 import com.jarica.preciogasolina.data.network.Retrofit.response.Towns
@@ -64,12 +69,15 @@ fun SearchUi(
 
     val isDataCharging: Boolean by searchViewModel.isDataCharging.observeAsState(initial = false)
 
+    val recentSearches by searchViewModel.recentSearches.observeAsState(listOf())
+
 
     if (!isDataCharging) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .background(colorResource(id = R.color.Beige)),
+                .background(colorResource(id = R.color.Beige))
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -115,6 +123,25 @@ fun SearchUi(
                         isTownSelected,
                         searchViewModel
                     )
+
+                    if (recentSearches.isNotEmpty()) {
+                        Spacer(modifier = Modifier.size(20.dp))
+                        Texto(stringResource(id = R.string.ultimasBusquedas))
+                        Spacer(modifier = Modifier.size(8.dp))
+                        recentSearches.forEach { search ->
+                            RecentSearchCard(search) {
+                                searchViewModel.onRecentSearchClicked(search)
+                                if (search.gasolineId.isEmpty()) {
+                                    listViewModel.getGasStationsByTowns()
+                                } else {
+                                    listViewModel.getGasStationsByTownsAndGasoline()
+                                }
+                                navController.navigate(Destinations.ListScreen.route)
+                            }
+                            Spacer(modifier = Modifier.size(8.dp))
+                        }
+                    }
+                    Spacer(modifier = Modifier.size(16.dp))
                 }
 
             }
@@ -336,6 +363,7 @@ fun SearchButton(
 ) {
     Button(
         onClick = {
+            searchViewModel.onSearchLaunched()
             if (gasoline.isEmpty()) {
                 listViewModel.getGasStationsByTowns()
                 navController.navigate(Destinations.ListScreen.route)
@@ -358,6 +386,49 @@ fun SearchButton(
             fontFamily = poppins,
             color = Color.White
         )
+    }
+}
+
+
+//TARJETA DE UNA BUSQUEDA RECIENTE: AL PULSARLA SE LANZA LA BUSQUEDA Y SE ABRE EL LISTADO
+@Composable
+fun RecentSearchCard(search: RecentSearch, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(colorResource(id = R.color.GrisClaro))
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = null,
+            tint = colorResource(id = R.color.Naranja)
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        Column {
+            Text(
+                text = if (search.gasolineName.isEmpty()) {
+                    stringResource(id = R.string.todosCarburantes)
+                } else {
+                    search.gasolineName
+                },
+                fontFamily = poppins,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            )
+            Text(
+                text = "${search.townName} (${search.provinceName})",
+                fontFamily = poppins,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                color = colorResource(id = R.color.Gris)
+            )
+        }
     }
 }
 

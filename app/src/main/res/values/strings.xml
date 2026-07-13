@@ -4,6 +4,8 @@
     <string name="seleccioneProvincia">Seleccione una Provincia</string>
     <string name="seleccioneMunicipio">Seleccione un municipio</string>
     <string name="searchButtton">Buscar</string>
+    <string name="ultimasBusquedas">Últimas búsquedas</string>
+    <string name="todosCarburantes">Todos los carburantes</string>
 
     Oresultado
     <string name="result0">Uppps, no hemos encontrado ningun resultado,</string>
