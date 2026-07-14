@@ -115,6 +115,7 @@ fun FavUi(
                             StationCard(
                                 station = station,
                                 esFavorita = true,
+                                todosLosPrecios = true,
                                 onClick = { listViewModel.selectStation(station.id) },
                                 onToggleFavorito = { listViewModel.deleteFavorite(station.id) }
                             )

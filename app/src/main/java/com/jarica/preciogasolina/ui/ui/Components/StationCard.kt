@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,6 +46,7 @@ import com.jarica.preciogasolina.ui.theme.Sora
 import com.jarica.preciogasolina.ui.theme.SpaceGrotesk
 import com.jarica.preciogasolina.ui.theme.Superficie
 import com.jarica.preciogasolina.ui.theme.Verde
+import com.jarica.preciogasolina.ui.ui.model.FuelPrice
 import com.jarica.preciogasolina.ui.ui.model.StationUi
 import com.jarica.preciogasolina.ui.ui.model.formatDelta
 import com.jarica.preciogasolina.ui.ui.model.formatPrecio
@@ -57,6 +59,8 @@ fun StationCard(
     esMasBarata: Boolean = false,
     delta: Double? = null,
     esFavorita: Boolean = false,
+    //EN BUSQUEDAS DE "TODOS LOS CARBURANTES" LA TARJETA LISTA TODOS LOS PRECIOS DISPONIBLES
+    todosLosPrecios: Boolean = false,
     onClick: () -> Unit,
     onToggleFavorito: () -> Unit,
     modifier: Modifier = Modifier
@@ -99,30 +103,87 @@ fun StationCard(
                 FavStar(esFavorita = esFavorita, onClick = onToggleFavorito)
             }
             Spacer(Modifier.height(13.dp))
-            Row(verticalAlignment = Alignment.Bottom) {
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        ChipDato(icono = R.drawable.ic_marker, texto = station.localidad)
-                        ChipDato(
-                            icono = R.drawable.ic_clock,
-                            texto = station.horario,
-                            modifier = Modifier.weight(1f, fill = false)
-                        )
-                    }
-                    if (delta != null && delta > 0.0005) {
-                        ChipDelta(delta)
-                    }
+            if (todosLosPrecios) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    ChipDato(icono = R.drawable.ic_marker, texto = station.localidad)
+                    ChipDato(
+                        icono = R.drawable.ic_clock,
+                        texto = station.horario,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
                 }
-                Spacer(Modifier.width(10.dp))
-                PrecioGrande(
-                    precio = station.precio,
-                    carburante = station.carburante,
-                    enVerde = esMasBarata
-                )
+                if (station.precios.isNotEmpty()) {
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalDivider(thickness = 1.dp, color = Linea)
+                    Spacer(Modifier.height(6.dp))
+                    GridPrecios(station.precios)
+                }
+            } else {
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            ChipDato(icono = R.drawable.ic_marker, texto = station.localidad)
+                            ChipDato(
+                                icono = R.drawable.ic_clock,
+                                texto = station.horario,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                        }
+                        if (delta != null && delta > 0.0005) {
+                            ChipDelta(delta)
+                        }
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    PrecioGrande(
+                        precio = station.precio,
+                        carburante = station.carburante,
+                        enVerde = esMasBarata
+                    )
+                }
             }
         }
         if (esMasBarata) {
             BadgeMasBarata(Modifier.padding(start = 14.dp))
+        }
+    }
+}
+
+//PARRILLA DE 2 COLUMNAS CON TODOS LOS CARBURANTES DE LA ESTACION
+@Composable
+private fun GridPrecios(precios: List<FuelPrice>) {
+    precios.chunked(2).forEach { fila ->
+        Row(Modifier.fillMaxWidth()) {
+            fila.forEach { fuel ->
+                Row(
+                    Modifier
+                        .weight(1f)
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = fuel.nombre,
+                        fontFamily = Sora,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 12.sp,
+                        color = InkSuave,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        text = "${formatPrecio(fuel.precio)} €",
+                        fontFamily = SpaceGrotesk,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.5.sp,
+                        color = Ink
+                    )
+                    Spacer(Modifier.width(10.dp))
+                }
+            }
+            if (fila.size == 1) {
+                Spacer(Modifier.weight(1f))
+            }
         }
     }
 }

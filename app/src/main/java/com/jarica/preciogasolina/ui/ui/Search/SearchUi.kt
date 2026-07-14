@@ -50,6 +50,17 @@ import java.util.Locale
 
 private const val LITROS_DEPOSITO = 50
 
+//LA API LISTA ~30 PRODUCTOS (QUEROSENO, FUELOLEO, AMONIACO...); EN EL SELECTOR SOLO
+//SE OFRECEN LOS HABITUALES, EN ESTE ORDEN. IDs DE ProductosPetroliferos DEL MINISTERIO.
+private val CARBURANTES_HABITUALES = listOf(
+    "4",  // Gasóleo A habitual
+    "5",  // Gasóleo Premium
+    "1",  // Gasolina 95 E5
+    "3",  // Gasolina 98 E5
+    "23", // Gasolina 95 E10
+    "17"  // GLP (Gases licuados del petróleo)
+)
+
 private enum class Picker { CARBURANTE, PROVINCIA, MUNICIPIO }
 
 @Composable
@@ -209,16 +220,18 @@ fun SearchUi(
 
     when (picker) {
         Picker.CARBURANTE -> {
-            val opciones = listOf("Todos los carburantes") + gasolineList.map { it.nombreProducto }
+            val habituales = CARBURANTES_HABITUALES.mapNotNull { id ->
+                gasolineList.find { it.iDProducto == id }
+            }
             SelectorSheet(
                 titulo = "Elige carburante",
-                opciones = opciones,
+                opciones = listOf("Todos los carburantes") + habituales.map { it.nombreProducto },
                 seleccionada = gasoline.ifEmpty { "Todos los carburantes" },
                 onSeleccion = { indice ->
                     if (indice == 0) {
                         searchViewModel.onDismissGasoline()
                     } else {
-                        val elegido = gasolineList[indice - 1]
+                        val elegido = habituales[indice - 1]
                         searchViewModel.onGasolineSelected(elegido.iDProducto, elegido.nombreProducto)
                     }
                     picker = null

@@ -112,6 +112,7 @@ fun ListUi(
                 StationCard(
                     station = station,
                     esMasBarata = station.id == idMasBarata,
+                    todosLosPrecios = !modoCarburante,
                     delta = if (precioMinimo != null && station.precio != null && station.id != idMasBarata) {
                         station.precio - precioMinimo
                     } else null,
