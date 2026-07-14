@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Artefactos de release (contienen la API key embebida, no publicar)
+app/release/

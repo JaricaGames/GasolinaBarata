@@ -173,6 +173,12 @@ fun SearchUi(
             }
         )
 
+        Spacer(Modifier.height(20.dp))
+        AdBanner(
+            adUnitId = "ca-app-pub-4979320410432560/7752668839",
+            adSize = AdSize.MEDIUM_RECTANGLE
+        )
+
         if (recentSearches.isNotEmpty()) {
             Spacer(Modifier.height(24.dp))
             Text(
@@ -198,11 +204,6 @@ fun SearchUi(
             }
         }
 
-        Spacer(Modifier.height(20.dp))
-        AdBanner(
-            adUnitId = "ca-app-pub-4979320410432560/7752668839",
-            adSize = AdSize.MEDIUM_RECTANGLE
-        )
         Spacer(Modifier.height(24.dp))
     }
 
