@@ -104,6 +104,7 @@ class SearchViewModel @Inject constructor(
     fun onRecentSearchClicked(search: RecentSearch) {
         selectionState.provinceId = search.provinceId
         selectionState.townId = search.townId
+        selectionState.townName = search.townName
         selectionState.gasolineId = search.gasolineId
         selectionState.gasolineName = search.gasolineName
         _gasolineSelected.value = search.gasolineName
@@ -143,6 +144,7 @@ class SearchViewModel @Inject constructor(
         _townSelected.value = municipio
         if (!isTownSelected) _isTownSelected.value = !isTownSelected
         selectionState.townId = idMunicipio
+        selectionState.townName = municipio
 
 
     }

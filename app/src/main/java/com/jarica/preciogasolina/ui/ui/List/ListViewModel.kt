@@ -33,6 +33,20 @@ class ListViewModel @Inject constructor(
     // Expuesto para la UI (ListUi / CardStationByGasolineAndTown) en lugar del antiguo estado estático.
     val selectedGasolineId: String get() = selectionState.gasolineId
     val selectedGasolineName: String get() = selectionState.gasolineName
+    val selectedTownName: String get() = selectionState.townName
+
+    //ESTACION ABIERTA EN LA PANTALLA DE DETALLE (null = detalle cerrado)
+    private val _selectedStationId = MutableLiveData<String?>(null)
+    val selectedStationId: MutableLiveData<String?> = _selectedStationId
+
+    fun selectStation(id: String?) {
+        _selectedStationId.value = id
+    }
+
+    //BUSCA LA ESTACION COMPLETA (TODOS LOS PRECIOS) EN LA LISTA GENERAL DE ESTACIONES
+    fun findStationById(id: String): GasolineraPorMunicipio? =
+        selectionState.stationList?.ListaEESSPrecio?.find { it.iDEESS == id }
+            ?: _gasList.value?.find { it.iDEESS == id }
 
 
     fun getGasStationsByTowns() {

@@ -16,6 +16,7 @@ import javax.inject.Inject
 class SearchSelectionState @Inject constructor() {
     var provinceId: String = ""
     var townId: String = ""
+    var townName: String = ""
     var gasolineId: String = ""
     var gasolineName: String = ""
     var stationList: MainResponse? = null
