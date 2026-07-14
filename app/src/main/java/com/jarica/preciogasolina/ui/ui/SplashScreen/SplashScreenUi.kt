@@ -1,5 +1,7 @@
 package com.jarica.preciogasolina.ui.ui.SplashScreen
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -28,18 +30,25 @@ import com.jarica.preciogasolina.ui.theme.Naranja
 import com.jarica.preciogasolina.ui.theme.NaranjaSuave
 import com.jarica.preciogasolina.ui.theme.Sora
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
+import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 import kotlinx.coroutines.delay
 
-const val SPLASHSCREEN_DURATION = 4000L
-
+//TIEMPO MINIMO EN PANTALLA PARA QUE EL SPLASH NO PARPADEE SI LOS DATOS LLEGAN AL INSTANTE
+private const val DURACION_MINIMA_MS = 900L
 
 @Composable
 fun SplashScreenUi(
     navController: NavHostController,
-    splashScreenViewModel: SplashScreenViewModel
+    searchViewModel: SearchViewModel
 ) {
-    val progressIndicator: Float by splashScreenViewModel.progressIndicator.observeAsState(initial = 0f)
-    splashScreenViewModel.progressIndicator()
+    //EL SPLASH TERMINA CUANDO LOS DATOS DE BUSQUEDA (PROVINCIAS/CARBURANTES) ESTAN LISTOS
+    val isDataCharging: Boolean by searchViewModel.isDataCharging.observeAsState(initial = true)
+
+    val progress by animateFloatAsState(
+        targetValue = if (isDataCharging) 0.85f else 1f,
+        animationSpec = tween(durationMillis = if (isDataCharging) 2500 else 250),
+        label = "splashProgress"
+    )
 
     Column(
         modifier = Modifier
@@ -88,7 +97,7 @@ fun SplashScreenUi(
         Spacer(modifier = Modifier.size(28.dp))
 
         Text(
-            text = "Cargando datos · ${(progressIndicator * 100).toInt()} %",
+            text = "Cargando datos",
             fontFamily = Sora,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
@@ -98,16 +107,19 @@ fun SplashScreenUi(
         Spacer(modifier = Modifier.size(12.dp))
 
         LinearProgressIndicator(
-            progress = { progressIndicator },
+            progress = { progress },
             color = Naranja,
             trackColor = Linea,
             modifier = Modifier.width(180.dp)
         )
     }
 
-    LaunchedEffect(key1 = true) {
-        delay(SPLASHSCREEN_DURATION)
-        navController.popBackStack()
-        navController.navigate(Destinations.MainScreen.route)
+    //NAVEGA EN CUANTO LOS DATOS ESTAN LISTOS, RESPETANDO UNA DURACION MINIMA
+    LaunchedEffect(isDataCharging) {
+        if (!isDataCharging) {
+            delay(DURACION_MINIMA_MS)
+            navController.popBackStack()
+            navController.navigate(Destinations.MainScreen.route)
+        }
     }
 }

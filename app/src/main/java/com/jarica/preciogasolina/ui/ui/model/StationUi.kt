@@ -25,6 +25,16 @@ data class StationUi(
 
 private val localeEs = Locale.forLanguageTag("es-ES")
 
+//EL CATALOGO DE PRODUCTOS DE LA API USA NOMBRES LARGOS; EN LA UI SE USA LA FORMA CORTA
+//(LA MISMA QUE preciosDisponibles) PARA QUE LOS NOMBRES CASEN EN TODAS LAS PANTALLAS
+fun nombreCarburanteCanonico(nombreApi: String): String = when (nombreApi) {
+    "Gasóleo A habitual" -> "Gasóleo A"
+    "Gases licuados del petróleo" -> "GLP"
+    "Gas natural comprimido" -> "GNC"
+    "Gas natural licuado" -> "GNL"
+    else -> nombreApi
+}
+
 fun parsePrecio(value: String?): Double? =
     value?.replace(',', '.')?.toDoubleOrNull()
 
@@ -38,6 +48,10 @@ fun formatPrecio(value: Double): String =
 //DIFERENCIA FRENTE A LA MAS BARATA: "+0,03"
 fun formatDelta(value: Double): String =
     String.format(localeEs, "+%.2f", value)
+
+//IMPORTES EN EUROS CON 2 DECIMALES: 9.5 -> "9,50"
+fun formatImporte(value: Double): String =
+    String.format(localeEs, "%.2f", value)
 
 fun GasolineraPorMunicipio.preciosDisponibles(): List<FuelPrice> = listOfNotNull(
     parsePrecio(precioGasoleoA)?.let { FuelPrice("Gasóleo A", it) },
@@ -75,7 +89,8 @@ fun GasolineraPorMunicipio.toStationUi(): StationUi {
     )
 }
 
-fun GasolineraPorGasolinaYMunicipio.toStationUi(carburante: String): StationUi {
+fun GasolineraPorGasolinaYMunicipio.toStationUi(carburanteApi: String): StationUi {
+    val carburante = nombreCarburanteCanonico(carburanteApi)
     val precio = parsePrecio(precioProducto)
     return StationUi(
         id = iDEESS,

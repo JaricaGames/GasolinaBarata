@@ -7,10 +7,8 @@ import androidx.navigation.compose.composable
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.MainScreenUi
-import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenUi
-import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenViewModel
 
 
 //COMPOSABLE QUE MANEJA LA NAVEGACION ENTRE LA SPLASH SCREEN Y LA MAINUI
@@ -18,9 +16,7 @@ import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenViewModel
 fun RootNavigationHost(
     navController: NavHostController,
     searchViewModel: SearchViewModel,
-    mapViewModel: MapViewModel,
     listViewModel: ListViewModel,
-    splashScreenViewModel: SplashScreenViewModel,
     favViewModel: FavViewModel
 ) {
     NavHost(
@@ -29,10 +25,10 @@ fun RootNavigationHost(
     ) {
 
         composable(Destinations.SplashScreen.route) {
-            SplashScreenUi(navController, splashScreenViewModel)
+            SplashScreenUi(navController, searchViewModel)
         }
         composable(Destinations.MainScreen.route) {
-            MainScreenUi(searchViewModel, mapViewModel, listViewModel, favViewModel)
+            MainScreenUi(searchViewModel, listViewModel, favViewModel)
         }
     }
 }

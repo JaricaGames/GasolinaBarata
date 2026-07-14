@@ -16,27 +16,18 @@ class FavViewModel @Inject constructor(
     private val selectionState: SearchSelectionState
 ) : ViewModel() {
 
-    var listFavIdAux: MutableList<String>? = null
-
-    fun ReturnListFavId(listFavId: MutableList<String>) {
-        listFavIdAux = listFavId
-    }
-
-    val uiState: StateFlow<FavoriteUiState> = getFavoritesUseCase().map(::Success)
-        .catch { FavoriteUiState.Error(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FavoriteUiState.Loading)
-
-
-    fun lookForGasStationFavoriteCard(idGasStationFav: String): GasolineraPorMunicipio? {
-        val stationList = selectionState.stationList
-        if (stationList != null) {
-            return stationList.ListaEESSPrecio.find {
-                it.iDEESS == idGasStationFav
-            }
-        } else {
-            return null
+    //SE COMBINA CON stationListFlow PARA QUE LA PANTALLA SE REFRESQUE CUANDO
+    //TERMINE LA DESCARGA DE LA LISTA NACIONAL (ANTES SE QUEDABA EN EL SPINNER)
+    val uiState: StateFlow<FavoriteUiState> =
+        combine(getFavoritesUseCase(), selectionState.stationListFlow) { favorites, _ ->
+            Success(favorites) as FavoriteUiState
         }
+            .catch { emit(FavoriteUiState.Error(it)) }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FavoriteUiState.Loading)
 
-    }
+    //true SI LA DESCARGA DE LA LISTA NACIONAL FALLO (LOS FAVORITOS NO SE PUEDEN RESOLVER)
+    val stationListError: StateFlow<Boolean> = selectionState.stationListError
+
+    fun lookForGasStationFavoriteCard(idGasStationFav: String): GasolineraPorMunicipio? =
+        selectionState.stationById(idGasStationFav)
 }
-

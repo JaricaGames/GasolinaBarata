@@ -14,7 +14,6 @@ import com.jarica.preciogasolina.ui.ui.Components.BottomNavigationBar
 import com.jarica.preciogasolina.ui.ui.Detail.StationDetailUi
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.*
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 
@@ -22,7 +21,6 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 @Composable
 fun MainScreenUi(
     searchViewModel: SearchViewModel,
-    mapViewModel: MapViewModel,
     listViewModel: ListViewModel,
     favViewModel: FavViewModel
 ) {
@@ -50,7 +48,6 @@ fun MainScreenUi(
                 HomeNavigationHost(
                     navController = navController2,
                     searchViewModel,
-                    mapViewModel,
                     listViewModel,
                     favViewModel
                 )

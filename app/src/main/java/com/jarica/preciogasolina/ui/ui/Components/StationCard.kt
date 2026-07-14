@@ -129,7 +129,8 @@ fun StationCard(
                                 modifier = Modifier.weight(1f, fill = false)
                             )
                         }
-                        if (delta != null && delta > 0.0005) {
+                        //SOLO SI LA DIFERENCIA ES VISIBLE CON 2 DECIMALES (EVITA CHIPS "+0,00")
+                        if (delta != null && delta >= 0.005) {
                             ChipDelta(delta)
                         }
                     }
@@ -149,8 +150,9 @@ fun StationCard(
 }
 
 //PARRILLA DE 2 COLUMNAS CON TODOS LOS CARBURANTES DE LA ESTACION
+//(COMPARTIDA ENTRE LA TARJETA Y EL PANEL DE PRECIOS DEL DETALLE)
 @Composable
-private fun GridPrecios(precios: List<FuelPrice>) {
+fun GridPrecios(precios: List<FuelPrice>) {
     precios.chunked(2).forEach { fila ->
         Row(Modifier.fillMaxWidth()) {
             fila.forEach { fuel ->

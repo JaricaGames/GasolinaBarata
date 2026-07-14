@@ -1,8 +1,10 @@
 package com.jarica.preciogasolina
 
 import android.annotation.SuppressLint
+import android.graphics.Color as AndroidColor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -15,19 +17,15 @@ import com.google.android.gms.ads.MobileAds
 import com.jarica.preciogasolina.ui.theme.PrecioGasolinaTheme
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
-import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Navigation.RootNavigationHost
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
-import com.jarica.preciogasolina.ui.ui.SplashScreen.SplashScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val searchViewModel: SearchViewModel by viewModels()
-    private val mapViewModel: MapViewModel by viewModels()
     private val listViewModel: ListViewModel by viewModels()
-    private val splashScreenViewModel: SplashScreenViewModel by viewModels()
     private val favViewModel: FavViewModel by viewModels()
 
     @SuppressLint("MissingPermission")
@@ -35,7 +33,11 @@ class MainActivity : ComponentActivity() {
 
         MobileAds.initialize(this)
 
-        enableEdgeToEdge()
+        //LA APP ES SIEMPRE CLARA: ICONOS OSCUROS EN LAS BARRAS AUNQUE EL SISTEMA ESTE EN MODO OSCURO
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(AndroidColor.TRANSPARENT, AndroidColor.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.light(AndroidColor.TRANSPARENT, AndroidColor.TRANSPARENT)
+        )
         super.onCreate(savedInstanceState)
         setContent {
             PrecioGasolinaTheme {
@@ -44,14 +46,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    //INICIAMOS EL CONTROLADOR DE LA RAIZ QUE INICIA LA SPLASHSCREEN Y TRAS 4 SEGUNDOS INICIA LA MAINSCREEN
+                    //INICIAMOS EL CONTROLADOR DE LA RAIZ QUE MUESTRA LA SPLASHSCREEN HASTA QUE LOS DATOS ESTAN LISTOS
                     val navController = rememberNavController()
                     RootNavigationHost(
                         navController = navController,
                         searchViewModel = searchViewModel,
-                        mapViewModel = mapViewModel,
                         listViewModel = listViewModel,
-                        splashScreenViewModel = splashScreenViewModel,
                         favViewModel = favViewModel
                     )
                 }

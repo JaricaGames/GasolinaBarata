@@ -37,18 +37,16 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.android.gms.ads.AdSize
+import com.jarica.preciogasolina.BuildConfig
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.core.RecentSearch
 import com.jarica.preciogasolina.ui.theme.*
 import com.jarica.preciogasolina.ui.ui.Components.AdBanner
 import com.jarica.preciogasolina.ui.ui.Components.SelectorSheet
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
+import com.jarica.preciogasolina.ui.ui.List.SearchResultsUiState
 import com.jarica.preciogasolina.ui.ui.Navigation.Destinations
-import com.jarica.preciogasolina.ui.ui.model.formatDelta
-import com.jarica.preciogasolina.ui.ui.model.parsePrecio
-import java.util.Locale
-
-private const val LITROS_DEPOSITO = 50
+import com.jarica.preciogasolina.ui.ui.model.formatImporte
 
 //LA API LISTA ~30 PRODUCTOS (QUEROSENO, FUELOLEO, AMONIACO...); EN EL SELECTOR SOLO
 //SE OFRECEN LOS HABITUALES, EN ESTE ORDEN. IDs DE ProductosPetroliferos DEL MINISTERIO.
@@ -78,14 +76,12 @@ fun SearchUi(
 
     val town: String by searchViewModel.townSelected.observeAsState(initial = "")
     val townsList by searchViewModel.townsList.observeAsState(listOf())
-    val isTownSelected: Boolean by searchViewModel.isTownSelected.observeAsState(initial = false)
 
     val isDataCharging: Boolean by searchViewModel.isDataCharging.observeAsState(initial = false)
     val recentSearches by searchViewModel.recentSearches.observeAsState(listOf())
 
-    //RESULTADOS DE LA ULTIMA BUSQUEDA, PARA CALCULAR EL AHORRO REAL DEL HERO
-    val gasList by listViewModel.gasList.observeAsState(listOf())
-    val gasListByGasAndTown by listViewModel.gasListByGasAndTown.observeAsState(listOf())
+    //RESULTADO DE LA ULTIMA BUSQUEDA EJECUTADA, PARA EL AHORRO REAL DEL HERO
+    val results by listViewModel.searchResults.observeAsState(SearchResultsUiState())
 
     var picker by rememberSaveable { mutableStateOf<Picker?>(null) }
 
@@ -136,8 +132,8 @@ fun SearchUi(
         Spacer(Modifier.height(16.dp))
 
         HeroAhorro(
-            ahorro = calcularAhorro(gasoline, gasList, gasListByGasAndTown),
-            municipio = listViewModel.selectedTownName
+            ahorro = results.ahorroDeposito,
+            municipio = results.municipio
         )
 
         Spacer(Modifier.height(16.dp))
@@ -186,7 +182,7 @@ fun SearchUi(
 
         Spacer(Modifier.height(20.dp))
         AdBanner(
-            adUnitId = "ca-app-pub-4979320410432560/7752668839",
+            adUnitId = BuildConfig.AD_UNIT_BUSCAR,
             adSize = AdSize.MEDIUM_RECTANGLE
         )
 
@@ -258,7 +254,7 @@ fun SearchUi(
             seleccionada = town.ifEmpty { null },
             onSeleccion = { indice ->
                 val elegido = townsList[indice]
-                searchViewModel.onTownSelected(elegido.Municipio, isTownSelected, elegido.IDMunicipio)
+                searchViewModel.onTownSelected(elegido.Municipio, elegido.IDMunicipio)
                 picker = null
             },
             onDismiss = { picker = null }
@@ -266,22 +262,6 @@ fun SearchUi(
 
         null -> {}
     }
-}
-
-//AHORRO POR DEPOSITO = (PRECIO MAX - PRECIO MIN) * LITROS, CON LOS RESULTADOS DE LA ULTIMA BUSQUEDA
-private fun calcularAhorro(
-    gasolineSelected: String,
-    gasList: List<com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio>,
-    gasListByGasAndTown: List<com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorGasolinaYMunicipio>
-): Double? {
-    val precios: List<Double> = if (gasolineSelected.isNotEmpty() && gasListByGasAndTown.isNotEmpty()) {
-        gasListByGasAndTown.mapNotNull { parsePrecio(it.precioProducto) }
-    } else {
-        gasList.mapNotNull { parsePrecio(it.precioGasoleoA) }
-    }
-    if (precios.size < 2) return null
-    val ahorro = (precios.max() - precios.min()) * LITROS_DEPOSITO
-    return if (ahorro > 0.005) ahorro else null
 }
 
 @Composable
@@ -310,47 +290,67 @@ private fun HeroAhorro(ahorro: Double?, municipio: String) {
                 .background(Color.White.copy(alpha = 0.10f))
         )
         Column(Modifier.padding(20.dp)) {
-            Text(
-                text = "Ahorra hasta",
-                fontFamily = Sora,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 13.sp,
-                color = Color.White.copy(alpha = 0.9f)
-            )
-            Spacer(Modifier.height(2.dp))
-            Row(verticalAlignment = Alignment.Bottom) {
+            if (ahorro != null) {
+                //AHORRO REAL CALCULADO CON LA ULTIMA BUSQUEDA
                 Text(
-                    text = ahorro?.let {
-                        String.format(Locale.forLanguageTag("es-ES"), "%.2f", it)
-                    } ?: "9,50",
-                    fontFamily = SpaceGrotesk,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 46.sp,
-                    lineHeight = 46.sp,
+                    text = "Ahorra hasta",
+                    fontFamily = Sora,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+                Spacer(Modifier.height(2.dp))
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(
+                        text = formatImporte(ahorro),
+                        fontFamily = SpaceGrotesk,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 46.sp,
+                        lineHeight = 46.sp,
+                        color = Color.White
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "€",
+                        fontFamily = SpaceGrotesk,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                    )
+                }
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = if (municipio.isNotEmpty()) {
+                        "por depósito comparando precios en $municipio"
+                    } else {
+                        "por depósito comparando precios antes de repostar"
+                    },
+                    fontFamily = Sora,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.92f)
+                )
+            } else {
+                //SIN BUSQUEDA AUN: MENSAJE GENERICO, SIN CIFRAS INVENTADAS
+                Text(
+                    text = "Compara y ahorra",
+                    fontFamily = Sora,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 27.sp,
+                    lineHeight = 30.sp,
                     color = Color.White
                 )
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.height(6.dp))
                 Text(
-                    text = "€",
-                    fontFamily = SpaceGrotesk,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(bottom = 6.dp)
+                    text = "Busca tu municipio y descubre cuánto puedes ahorrar en cada depósito.",
+                    fontFamily = Sora,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.92f),
+                    modifier = Modifier.widthIn(max = 260.dp)
                 )
             }
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = if (ahorro != null && municipio.isNotEmpty()) {
-                    "por depósito comparando precios en $municipio"
-                } else {
-                    "por depósito comparando precios antes de repostar"
-                },
-                fontFamily = Sora,
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp,
-                color = Color.White.copy(alpha = 0.92f)
-            )
         }
     }
 }

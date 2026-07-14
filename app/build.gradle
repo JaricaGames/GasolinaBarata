@@ -28,6 +28,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // IDs reales de AdMob (solo release: las builds de desarrollo no deben servir anuncios reales)
+            buildConfigField "String", "AD_UNIT_BUSCAR", '"ca-app-pub-4979320410432560/7752668839"'
+            buildConfigField "String", "AD_UNIT_LISTA", '"ca-app-pub-4979320410432560/2352636871"'
+            buildConfigField "String", "AD_UNIT_MAPA", '"ca-app-pub-4979320410432560/1231126890"'
+            buildConfigField "String", "AD_UNIT_FAVORITOS", '"ca-app-pub-4979320410432560/8638843620"'
+        }
+        debug {
+            // ID de banner de prueba oficial de Google: impresiones/clics de desarrollo no cuentan
+            buildConfigField "String", "AD_UNIT_BUSCAR", '"ca-app-pub-3940256099942544/6300978111"'
+            buildConfigField "String", "AD_UNIT_LISTA", '"ca-app-pub-3940256099942544/6300978111"'
+            buildConfigField "String", "AD_UNIT_MAPA", '"ca-app-pub-3940256099942544/6300978111"'
+            buildConfigField "String", "AD_UNIT_FAVORITOS", '"ca-app-pub-3940256099942544/6300978111"'
         }
     }
     compileOptions {

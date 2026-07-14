@@ -1,8 +1,10 @@
 package com.jarica.preciogasolina.ui.ui.Detail
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,9 +21,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,8 +38,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -49,14 +48,14 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.jarica.preciogasolina.R
 import com.jarica.preciogasolina.ui.theme.*
 import com.jarica.preciogasolina.ui.ui.Components.BadgeMasBarata
-import com.jarica.preciogasolina.ui.ui.Components.FavStar
+import com.jarica.preciogasolina.ui.ui.Components.GridPrecios
+import com.jarica.preciogasolina.ui.ui.Components.rememberFavoriteIds
 import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
-import com.jarica.preciogasolina.ui.ui.FavScreen.FavoriteUiState
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
+import com.jarica.preciogasolina.ui.ui.List.SearchResultsUiState
 import com.jarica.preciogasolina.ui.ui.model.FuelPrice
 import com.jarica.preciogasolina.ui.ui.model.StationUi
 import com.jarica.preciogasolina.ui.ui.model.formatPrecio
-import com.jarica.preciogasolina.ui.ui.model.parsePrecio
 import com.jarica.preciogasolina.ui.ui.model.toStationUi
 
 //DETALLE DE ESTACION: OVERLAY A PANTALLA COMPLETA SOBRE LA MAIN SCREEN
@@ -69,51 +68,32 @@ fun StationDetailUi(
 
     BackHandler { listViewModel.selectStation(null) }
 
-    val gasListByGasAndTown by listViewModel.gasListByGasAndTown.observeAsState(listOf())
+    val results by listViewModel.searchResults.observeAsState(SearchResultsUiState())
 
-    //ESTACION COMPLETA (TODOS LOS PRECIOS) SI ESTA DISPONIBLE; SI NO, LA VARIANTE DE UN SOLO CARBURANTE
-    val station: StationUi? = remember(stationId, gasListByGasAndTown) {
+    //ESTACION COMPLETA (TODOS LOS PRECIOS) SI ESTA DISPONIBLE; SI NO, LA DE LA BUSQUEDA ACTUAL
+    val station: StationUi? = remember(stationId, results) {
         listViewModel.findStationById(stationId)?.toStationUi()
-            ?: gasListByGasAndTown.find { it.iDEESS == stationId }
-                ?.toStationUi(listViewModel.selectedGasolineName)
+            ?: results.stations.find { it.id == stationId }
     }
 
     if (station == null) {
-        listViewModel.selectStation(null)
+        //NO SE PUEDE RESOLVER (LISTA NACIONAL AUN DESCARGANDO O ESTACION DESAPARECIDA): CERRAR
+        LaunchedEffect(stationId) { listViewModel.selectStation(null) }
         return
     }
 
-    //FAVORITOS
-    val listFavId: MutableList<String> = mutableListOf()
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState<FavoriteUiState>(
-        initialValue = FavoriteUiState.Loading, key1 = lifecycle, key2 = favViewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.CREATED) {
-            favViewModel.uiState.collect { value = it }
-        }
-    }
-    when (uiState) {
-        is FavoriteUiState.Success -> (uiState as FavoriteUiState.Success).favorites.forEach {
-            listFavId.add(it.id)
-        }
-        else -> {}
-    }
+    val listFavId = rememberFavoriteIds(favViewModel)
     val esFavorita = listFavId.contains(station.id)
 
-    //PRECIO PRINCIPAL: EL CARBURANTE BUSCADO SI LO HAY, SI NO EL PRIMERO DISPONIBLE
-    val carburanteBuscado = listViewModel.selectedGasolineName
-    val precioPrincipal: FuelPrice? = station.precios.firstOrNull { it.nombre == carburanteBuscado }
-        ?: station.precios.firstOrNull()
+    //PRECIO PRINCIPAL: EL CARBURANTE DE LA BUSQUEDA ACTUAL SI LO HAY, SI NO EL PRIMERO DISPONIBLE
+    //(NOMBRES YA CANONICOS EN AMBOS LADOS)
+    val precioPrincipal: FuelPrice? =
+        station.precios.firstOrNull { results.esModoCarburante && it.nombre == results.carburante }
+            ?: station.precios.firstOrNull()
     val restoPrecios = station.precios.filter { it != precioPrincipal }
 
-    //ES LA MAS BARATA DE LA BUSQUEDA ACTUAL (SOLO COMPARABLE EN MODO CARBURANTE)
-    val esMasBarata = remember(stationId, gasListByGasAndTown) {
-        val precios = gasListByGasAndTown.mapNotNull { parsePrecio(it.precioProducto) }
-        val propio = gasListByGasAndTown.find { it.iDEESS == stationId }
-            ?.let { parsePrecio(it.precioProducto) }
-        precios.isNotEmpty() && propio != null && propio == precios.min()
-    }
+    //SOLO ES "MAS BARATA" RESPECTO A LA BUSQUEDA EJECUTADA, NUNCA A UNA ANTERIOR
+    val esMasBarata = results.esModoCarburante && stationId == results.idMasBarata
 
     val context = LocalContext.current
 
@@ -198,39 +178,41 @@ fun StationDetailUi(
             }
         }
 
-        //CTA NAVEGAR
-        Box(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(Fondo)
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-            Button(
-                onClick = { lanzarNavegacion(station, context) },
-                shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Naranja,
-                    contentColor = Color.White
-                ),
-                modifier = Modifier
+        //CTA NAVEGAR (SOLO SI LA ESTACION TIENE COORDENADAS)
+        if (station.latitud != null && station.longitud != null) {
+            Box(
+                Modifier
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(58.dp)
-                    .shadow(8.dp, RoundedCornerShape(18.dp), spotColor = Naranja.copy(alpha = 0.6f))
+                    .background(Fondo)
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_navigation),
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(Modifier.width(10.dp))
-                Text(
-                    text = "Navegar",
-                    fontFamily = Sora,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.5.sp
-                )
+                Button(
+                    onClick = { lanzarNavegacion(station.latitud, station.longitud, context) },
+                    shape = RoundedCornerShape(18.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Naranja,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp)
+                        .shadow(8.dp, RoundedCornerShape(18.dp), spotColor = Naranja.copy(alpha = 0.6f))
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_navigation),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        text = "Navegar",
+                        fontFamily = Sora,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.5.sp
+                    )
+                }
             }
         }
     }
@@ -337,43 +319,8 @@ private fun PanelPrecios(
         if (restoPrecios.isNotEmpty()) {
             Spacer(Modifier.height(14.dp))
             HorizontalDivider(thickness = 1.dp, color = Linea)
-            Spacer(Modifier.height(14.dp))
-
-            //GRID DE 2 COLUMNAS CON EL RESTO DE CARBURANTES
-            restoPrecios.chunked(2).forEach { fila ->
-                Row(Modifier.fillMaxWidth()) {
-                    fila.forEach { fuel ->
-                        Row(
-                            Modifier
-                                .weight(1f)
-                                .padding(vertical = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = fuel.nombre,
-                                fontFamily = Sora,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.5.sp,
-                                color = InkSuave,
-                                maxLines = 1,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Spacer(Modifier.width(6.dp))
-                            Text(
-                                text = "${formatPrecio(fuel.precio)} €",
-                                fontFamily = SpaceGrotesk,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = Ink
-                            )
-                            Spacer(Modifier.width(12.dp))
-                        }
-                    }
-                    if (fila.size == 1) {
-                        Spacer(Modifier.weight(1f))
-                    }
-                }
-            }
+            Spacer(Modifier.height(8.dp))
+            GridPrecios(restoPrecios)
         }
     }
 }
@@ -439,11 +386,20 @@ private fun FilaInfo(icono: Int, etiqueta: String, valor: String) {
     }
 }
 
-private fun lanzarNavegacion(station: StationUi, context: Context) {
-    val latitud = station.latitud ?: return
-    val longitud = station.longitud ?: return
-    val gmmIntentUri = Uri.parse("google.navigation:q=$latitud,$longitud")
-    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-    mapIntent.setPackage("com.google.android.apps.maps")
-    ContextCompat.startActivity(context, mapIntent, bundleOf())
+//ABRE LA NAVEGACION EN GOOGLE MAPS; SI NO ESTA, CUALQUIER APP DE MAPAS; SI NO HAY NINGUNA, AVISA
+private fun lanzarNavegacion(latitud: Double, longitud: Double, context: Context) {
+    val navegacionUri = Uri.parse("google.navigation:q=$latitud,$longitud")
+    val intentGoogleMaps = Intent(Intent.ACTION_VIEW, navegacionUri).apply {
+        setPackage("com.google.android.apps.maps")
+    }
+    try {
+        ContextCompat.startActivity(context, intentGoogleMaps, bundleOf())
+    } catch (e: ActivityNotFoundException) {
+        val intentGenerico = Intent(Intent.ACTION_VIEW, Uri.parse("geo:$latitud,$longitud?q=$latitud,$longitud"))
+        try {
+            ContextCompat.startActivity(context, intentGenerico, bundleOf())
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "No hay ninguna app de mapas instalada", Toast.LENGTH_SHORT).show()
+        }
+    }
 }

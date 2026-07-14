@@ -9,7 +9,6 @@ import com.jarica.preciogasolina.ui.ui.FavScreen.FavViewModel
 import com.jarica.preciogasolina.ui.ui.List.ListUi
 import com.jarica.preciogasolina.ui.ui.List.ListViewModel
 import com.jarica.preciogasolina.ui.ui.Map.MapUi
-import com.jarica.preciogasolina.ui.ui.Map.MapViewModel
 import com.jarica.preciogasolina.ui.ui.Search.SearchUi
 import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 
@@ -19,7 +18,6 @@ import com.jarica.preciogasolina.ui.ui.Search.SearchViewModel
 fun HomeNavigationHost(
     navController: NavHostController,
     searchViewModel: SearchViewModel,
-    mapViewModel: MapViewModel,
     listViewModel: ListViewModel,
     favViewModel: FavViewModel
 ){
@@ -28,7 +26,7 @@ fun HomeNavigationHost(
             SearchUi(searchViewModel, navController, listViewModel)
         }
         composable(Destinations.MapScreen.route){
-            MapUi(mapViewModel, listViewModel)
+            MapUi(listViewModel, favViewModel)
         }
         composable(Destinations.ListScreen.route){
             ListUi(listViewModel, navController, favViewModel)
@@ -38,5 +36,3 @@ fun HomeNavigationHost(
         }
     }
 }
-
-
