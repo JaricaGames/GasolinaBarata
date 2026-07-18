@@ -1,21 +1,21 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
+# Reglas de R8 del proyecto.
 #
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Hilt, Compose, Maps y Ads traen sus reglas automaticamente (consumer rules).
+# Lo unico que hay que proteger a mano es lo que pasa por reflexion: Gson.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# --- Gson ---
+# Los genericos (TypeToken<List<RecentSearch>>, Type de DailyJsonCache) necesitan
+# la firma generica y las anotaciones en el bytecode
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# --- Modelos deserializados por Gson via reflexion ---
+# Si R8 renombra estos campos, el parseo del JSON del Ministerio devuelve nulls EN SILENCIO
+# (la app arranca pero no muestra gasolineras). No quitar.
+-keep class com.jarica.preciogasolina.data.network.Retrofit.response.** { *; }
+-keep class com.jarica.preciogasolina.core.RecentSearch { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Trazas de crash legibles en Play Console (el mapping.txt se sube aparte)
+-keepattributes SourceFile,LineNumberTable

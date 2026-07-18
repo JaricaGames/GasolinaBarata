@@ -48,7 +48,8 @@ android {
             if (keystoreProperties['RELEASE_STORE_FILE']) {
                 signingConfig signingConfigs.release
             }
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // IDs reales de AdMob (solo release: las builds de desarrollo no deben servir anuncios reales)
             buildConfigField "String", "AD_UNIT_BUSCAR", '"ca-app-pub-4979320410432560/7752668839"'
