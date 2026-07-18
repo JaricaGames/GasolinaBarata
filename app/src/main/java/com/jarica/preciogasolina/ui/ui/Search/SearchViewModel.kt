@@ -66,8 +66,16 @@ class SearchViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
+            var prefilled = false
             preferencesManager.loadRecentSearches().collect {
                 _recentSearches.value = it
+                //AL ABRIR LA APP, LOS CAMPOS SE RELLENAN SOLOS CON LA ULTIMA BUSQUEDA GUARDADA
+                if (!prefilled) {
+                    prefilled = true
+                    if (selectionState.townId.isEmpty() && selectionState.gasolineId.isEmpty()) {
+                        it.firstOrNull()?.let(::applySearchSelection)
+                    }
+                }
             }
         }
     }
@@ -91,6 +99,15 @@ class SearchViewModel @Inject constructor(
 
     //RESTAURA LA SELECCION DE UNA BUSQUEDA RECIENTE ANTES DE LANZARLA
     fun onRecentSearchClicked(search: RecentSearch) {
+        applySearchSelection(search)
+        viewModelScope.launch {
+            //LA VUELVE A GUARDAR PARA SUBIRLA A LA PRIMERA POSICION
+            preferencesManager.saveRecentSearch(search)
+        }
+    }
+
+    //VUELCA UNA BUSQUEDA GUARDADA EN LOS CAMPOS Y EN EL ESTADO COMPARTIDO
+    private fun applySearchSelection(search: RecentSearch) {
         selectionState.provinceId = search.provinceId
         selectionState.townId = search.townId
         selectionState.townName = search.townName
@@ -100,10 +117,6 @@ class SearchViewModel @Inject constructor(
         _provinceSelected.value = search.provinceName
         _townSelected.value = search.townName
         getTownsByProvince(search.provinceId)
-        viewModelScope.launch {
-            //LA VUELVE A GUARDAR PARA SUBIRLA A LA PRIMERA POSICION
-            preferencesManager.saveRecentSearch(search)
-        }
     }
 
     fun onProvinceSelected(label: String, idProvincia: String) {

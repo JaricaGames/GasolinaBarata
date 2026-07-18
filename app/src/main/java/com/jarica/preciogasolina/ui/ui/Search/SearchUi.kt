@@ -186,7 +186,11 @@ fun SearchUi(
             adSize = AdSize.MEDIUM_RECTANGLE
         )
 
-        if (recentSearches.isNotEmpty()) {
+        //LA RECIENTE QUE YA ESTA PUESTA EN LOS CAMPOS NO SE REPITE EN LA LISTA
+        val visibleRecentSearches = recentSearches.filterNot {
+            it.townName == town && it.provinceName == province && it.gasolineName == gasoline
+        }
+        if (visibleRecentSearches.isNotEmpty()) {
             Spacer(Modifier.height(24.dp))
             Text(
                 text = "ÚLTIMAS BÚSQUEDAS",
@@ -197,7 +201,7 @@ fun SearchUi(
                 color = Muted2
             )
             Spacer(Modifier.height(10.dp))
-            recentSearches.forEach { search ->
+            visibleRecentSearches.forEach { search ->
                 RecentSearchCard(search) {
                     searchViewModel.onRecentSearchClicked(search)
                     if (search.gasolineId.isEmpty()) {
