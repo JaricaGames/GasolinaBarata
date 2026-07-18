@@ -48,7 +48,7 @@ fun BottomNavigationBar(
             .navigationBarsPadding()
     ) {
         HorizontalDivider(thickness = 1.dp, color = Linea)
-        Row(Modifier.height(72.dp)) {
+        Row(Modifier.height(58.dp)) {
             items.forEach { screen ->
                 val activa = currentRoute == screen.route
                 val color = if (activa) Naranja else Muted3

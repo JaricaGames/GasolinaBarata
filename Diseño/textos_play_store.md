@@ -63,6 +63,25 @@ diésel/gasoil, precio(s), barata, carburante, ahorrar/ahorro, repostar, lleno.)
 
 ---
 
+## Novedades de la versión 3.0 (máx. 500 caracteres)
+
+Va en Play Console al crear la versión, campo "Notas de la versión".
+
+```
+¡App completamente renovada!
+
+• Nuevo nombre y nuevo icono: ahora somos PrecioGas
+• Diseño nuevo de arriba a abajo, más claro y más rápido
+• La app recuerda tu última búsqueda y te la deja preparada al abrir
+• Mapa con los precios visibles en cada gasolinera
+• Cuánto puedes ahorrar en cada depósito, de un vistazo
+• Guarda tus gasolineras favoritas y consulta sus precios al momento
+```
+
+*(~400 caracteres)*
+
+---
+
 ## Notas ASO
 
 - **El `app_name` del APK ("PrecioGas") no afecta al buscador de Play** — el posicionamiento

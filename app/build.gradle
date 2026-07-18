@@ -8,6 +8,13 @@ plugins {
 
 }
 
+//DATOS DE FIRMA DESDE local.properties (GITIGNORADO: LAS CONTRASEÑAS NO ENTRAN EN EL REPO)
+def keystoreProperties = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { keystoreProperties.load(it) }
+}
+
 android {
     compileSdk 36
 
@@ -15,8 +22,8 @@ android {
         applicationId "com.jarica.preciogasolina"
         minSdk 27
         targetSdk 36
-        versionCode 10
-        versionName "2.1.1"
+        versionCode 11
+        versionName "3.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -24,8 +31,23 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            if (keystoreProperties['RELEASE_STORE_FILE']) {
+                storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
+                storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
+                keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
+                keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
+            }
+        }
+    }
+
     buildTypes {
         release {
+            //SOLO FIRMA SI local.properties TIENE LOS DATOS; SI NO, EL BUNDLE SALE SIN FIRMAR
+            if (keystoreProperties['RELEASE_STORE_FILE']) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // IDs reales de AdMob (solo release: las builds de desarrollo no deben servir anuncios reales)
