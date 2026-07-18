@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Capa monocroma (iconos tematizados Android 13+): silueta del pin con hueco circular -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M69.56,63.56 A22,22 0 1 0 38.44,63.56 L54,79.11 Z M40.3,48a13.7,13.7 0 1 0 27.4,0a13.7,13.7 0 1 0 -27.4,0Z" />
+</vector>

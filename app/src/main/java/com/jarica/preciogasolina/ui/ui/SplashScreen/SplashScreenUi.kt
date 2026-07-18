@@ -87,7 +87,7 @@ fun SplashScreenUi(
         Spacer(modifier = Modifier.size(6.dp))
 
         Text(
-            text = "Gasolina barata",
+            text = "PrecioGas",
             fontFamily = Sora,
             fontWeight = FontWeight.ExtraBold,
             fontSize = 27.sp,

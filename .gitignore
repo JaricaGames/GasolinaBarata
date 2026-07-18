@@ -16,3 +16,6 @@ local.properties
 
 # Artefactos de release (contienen la API key embebida, no publicar)
 app/release/
+
+# Estado de sesion del compilador Kotlin
+.kotlin/
