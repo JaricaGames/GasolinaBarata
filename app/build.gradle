@@ -22,8 +22,8 @@ android {
         applicationId "com.jarica.preciogasolina"
         minSdk 27
         targetSdk 36
-        versionCode 14
-        versionName "3.0"
+        versionCode 15
+        versionName "3.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -145,5 +145,8 @@ dependencies {
 
     //DataStore
     implementation 'androidx.datastore:datastore-preferences:1.1.7'
+
+    //In-App Review de Google Play (valoracion sin salir de la app)
+    implementation 'com.google.android.play:review-ktx:2.0.2'
 
 }

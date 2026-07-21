@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
@@ -34,6 +35,20 @@ class PreferencesManager @Inject constructor(@ApplicationContext private val con
         }
     }
 
+    //CUENTA UNA BUSQUEDA COMPLETADA Y DICE SI TOCA PEDIR VALORACION: A LA TERCERA BUSQUEDA
+    //Y, POR SI PLAY NO LLEGO A MOSTRAR EL DIALOGO (SUS CUOTAS DECIDEN), CADA 20 BUSQUEDAS MAS.
+    //SI EL USUARIO YA VALORO, PLAY NUNCA VUELVE A MOSTRARLO: REINTENTAR NO MOLESTA.
+    suspend fun registerSearchForReview(): Boolean {
+        var shouldAsk = false
+        context.dataStore.edit { preference ->
+            val key = intPreferencesKey(SEARCH_COUNT_KEY)
+            val count = (preference[key] ?: 0) + 1
+            preference[key] = count
+            shouldAsk = count == 3 || (count > 3 && (count - 3) % 20 == 0)
+        }
+        return shouldAsk
+    }
+
     private fun parseRecentSearches(json: String?): List<RecentSearch> {
         if (json.isNullOrEmpty()) return emptyList()
         return try {
@@ -45,6 +60,7 @@ class PreferencesManager @Inject constructor(@ApplicationContext private val con
 
     companion object {
         const val RECENT_SEARCHES_KEY = "recent_searches_key"
+        const val SEARCH_COUNT_KEY = "search_count_key"
     }
 }
 

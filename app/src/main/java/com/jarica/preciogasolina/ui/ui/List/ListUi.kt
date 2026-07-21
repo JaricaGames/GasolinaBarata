@@ -13,16 +13,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.jarica.preciogasolina.BuildConfig
+import com.jarica.preciogasolina.core.findActivity
+import com.jarica.preciogasolina.core.launchInAppReview
 import com.jarica.preciogasolina.ui.theme.*
 import com.jarica.preciogasolina.ui.ui.Components.AdBanner
 import com.jarica.preciogasolina.ui.ui.Components.EmptyState
@@ -40,6 +44,16 @@ fun ListUi(
 
     val results by listViewModel.searchResults.observeAsState(SearchResultsUiState())
     val listFavId = rememberFavoriteIds(favViewModel)
+
+    //A LA TERCERA BUSQUEDA COMPLETADA SE PIDE LA VALORACION, CON LOS RESULTADOS YA A LA VISTA
+    val askForReview by listViewModel.askForReview.observeAsState(false)
+    val context = LocalContext.current
+    if (askForReview) {
+        LaunchedEffect(Unit) {
+            listViewModel.onReviewLaunched()
+            context.findActivity()?.let { launchInAppReview(it) }
+        }
+    }
 
     if (results.stations.isEmpty()) {
         EmptyGasStationList(navController)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jarica.preciogasolina.core.PreferencesManager
 import com.jarica.preciogasolina.core.SearchSelectionState
 import com.jarica.preciogasolina.data.network.Retrofit.response.GasolineraPorMunicipio
 import com.jarica.preciogasolina.data.network.repositories.RetrofitRepository
@@ -41,10 +42,19 @@ class ListViewModel @Inject constructor(
     private val addFavoriteUseCase: AddFavoriteUseCase,
     private val deleteFavoriteUseCase: DeleteFavoriteUseCase,
     private val selectionState: SearchSelectionState,
+    private val preferencesManager: PreferencesManager,
 ) : ViewModel() {
 
     private val _searchResults = MutableLiveData(SearchResultsUiState())
     val searchResults: LiveData<SearchResultsUiState> = _searchResults
+
+    //EVENTO DE UN SOLO USO: true CUANDO TOCA PEDIR LA VALORACION EN GOOGLE PLAY
+    private val _askForReview = MutableLiveData(false)
+    val askForReview: LiveData<Boolean> = _askForReview
+
+    fun onReviewLaunched() {
+        _askForReview.value = false
+    }
 
     //ULTIMA BUSQUEDA POR MUNICIPIO CON TODOS LOS PRECIOS, PARA RESOLVER LA FICHA DE DETALLE
     private var lastTownStations: List<GasolineraPorMunicipio> = emptyList()
@@ -70,6 +80,7 @@ class ListViewModel @Inject constructor(
                     stations.mapNotNull { st -> st.precios.find { it.nombre == "Gasóleo A" }?.precio }
                 )
             )
+            registerSearchForReview()
         }
     }
 
@@ -91,6 +102,14 @@ class ListViewModel @Inject constructor(
                 precioMinimo = minimo,
                 ahorroDeposito = ahorroDeposito(stations.mapNotNull { it.precio })
             )
+            registerSearchForReview()
+        }
+    }
+
+    //SOLO CUENTAN LAS BUSQUEDAS QUE LLEGAN A MOSTRAR RESULTADOS (SI LA RED FALLA, NO SE LLEGA AQUI)
+    private suspend fun registerSearchForReview() {
+        if (preferencesManager.registerSearchForReview()) {
+            _askForReview.value = true
         }
     }
 

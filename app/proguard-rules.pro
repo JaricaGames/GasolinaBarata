@@ -19,3 +19,8 @@
 
 # Trazas de crash legibles en Play Console (el mapping.txt se sube aparte)
 -keepattributes SourceFile,LineNumberTable
+
+# --- In-App Review (review-ktx) ---
+# review-ktx referencia esta anotacion de una version de play-services mas nueva que la
+# del proyecto; es solo una anotacion (no hay codigo que ejecutar) y R8 puede ignorarla
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
