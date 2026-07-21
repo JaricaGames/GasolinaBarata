@@ -1,6 +1,8 @@
 package com.jarica.preciogasolina.ui.ui.Search
 
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,8 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -216,6 +221,8 @@ fun SearchUi(
         }
 
         Spacer(Modifier.height(24.dp))
+        LegalFooter()
+        Spacer(Modifier.height(16.dp))
     }
 
     when (picker) {
@@ -448,6 +455,56 @@ private fun SearchButton(habilitado: Boolean, onClick: () -> Unit) {
             fontFamily = Sora,
             fontWeight = FontWeight.Bold,
             fontSize = 16.5.sp
+        )
+    }
+}
+
+//PIE LEGAL: FUENTE OFICIAL DE LOS DATOS, AVISO DE APP NO GUBERNAMENTAL Y POLITICA DE
+//PRIVACIDAD. GOOGLE PLAY EXIGE LOS TRES DENTRO DE LA PROPIA APP (POLITICAS DE USER DATA
+//Y DE AFIRMACIONES ENGAÑOSAS AL MOSTRAR INFORMACION GUBERNAMENTAL).
+@Composable
+private fun LegalFooter() {
+    val context = LocalContext.current
+    fun abrir(url: String) =
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "Fuente de los precios: Ministerio para la Transición Ecológica — Geoportal de Hidrocarburos (geoportalgasolineras.es)",
+            fontFamily = Sora,
+            fontWeight = FontWeight.Medium,
+            fontSize = 11.5.sp,
+            color = Muted2,
+            textDecoration = TextDecoration.Underline,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { abrir("https://geoportalgasolineras.es") }
+                .padding(vertical = 6.dp)
+        )
+        Text(
+            text = "PrecioGas es una app independiente, no asociada a ninguna entidad pública.",
+            fontFamily = Sora,
+            fontWeight = FontWeight.Medium,
+            fontSize = 11.5.sp,
+            color = Muted2,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
+        Text(
+            text = "Política de privacidad",
+            fontFamily = Sora,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.5.sp,
+            color = Muted2,
+            textDecoration = TextDecoration.Underline,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { abrir("https://jaricagames.github.io/preciogas-privacidad.html") }
+                .padding(vertical = 6.dp)
         )
     }
 }

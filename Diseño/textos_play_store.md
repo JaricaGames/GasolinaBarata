@@ -38,7 +38,10 @@ las búsquedas típicas.)*
 ¿A cuánto está hoy el litro? PrecioGas te enseña el precio de la gasolina y el diésel en todas las gasolineras de tu municipio, para que llenes el depósito siempre en la más barata.
 
 ⛽ PRECIOS OFICIALES, ACTUALIZADOS CADA DÍA
-Los precios provienen de los datos oficiales del Ministerio (Geoportal de hidrocarburos) y se actualizan a diario. Más de 11.000 gasolineras de toda España: Repsol, Cepsa, BP, Shell, Galp, Ballenoil, Plenoil, Carrefour, Alcampo, Q8 y muchas más, incluidas las low cost.
+Los precios provienen de los datos abiertos que publica el Ministerio para la Transición Ecológica y el Reto Demográfico (Gobierno de España) a través del Geoportal de Hidrocarburos, y se actualizan a diario. Puedes consultar la fuente oficial aquí:
+• https://geoportalgasolineras.es
+• https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/help
+Más de 11.000 gasolineras de toda España: Repsol, Cepsa, BP, Shell, Galp, Ballenoil, Plenoil, Carrefour, Alcampo, Q8 y muchas más, incluidas las low cost.
 
 💶 AHORRA EN CADA REPOSTAJE
 Busca por municipio y tipo de carburante (gasolina 95 y 98, diésel, GLP y más) y compara los precios al momento. La app te marca la gasolinera más barata y te dice cuánto puedes ahorrar en el depósito respecto a la más cara de tu zona.
@@ -56,6 +59,8 @@ Guarda en favoritos las gasolineras donde sueles repostar y consulta sus precios
 Sin cuentas ni configuraciones: abre la app, elige tu municipio y reposta más barato.
 
 Con la subida del precio de la gasolina y del gasoil, elegir bien la gasolinera puede suponer varios euros de ahorro en cada lleno. Descarga PrecioGas y no vuelvas a pagar tu carburante de más.
+
+AVISO: PrecioGas es una aplicación independiente y NO es una app oficial. No está afiliada, asociada ni respaldada por el Ministerio para la Transición Ecológica y el Reto Demográfico ni por ninguna otra entidad pública. Los precios se obtienen del servicio público de datos abiertos del Gobierno de España indicado más arriba.
 ```
 
 *(~1.500 caracteres; repite de forma natural las keywords: gasolina, gasolinera(s),
